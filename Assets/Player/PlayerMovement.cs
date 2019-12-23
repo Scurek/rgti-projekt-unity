@@ -64,15 +64,20 @@ public class PlayerMovement : MonoBehaviour {
             slopeVelocity = Vector3.zero;
         }
         else if (isSloped) {
+            Debug.Log("SLIDERAM");
             //characterVelocity += worldspaceMoveInput * 25f * Time.deltaTime;
-            characterVelocity.x = 0;
-            characterVelocity.z = 0;
-            slopeVelocity.x += (1f - m_GroundNormal.y) * m_GroundNormal.x * (0.7f);
-            slopeVelocity.z += (1f - m_GroundNormal.y) * m_GroundNormal.z * (0.7f);
-            display.text = isSloped + " " + slopeVelocity;
+            // characterVelocity.x = 0;
+            // characterVelocity.z = 0;
+            
+            characterVelocity = Vector3.zero;
+            slopeVelocity.x += (1f - m_GroundNormal.y) * m_GroundNormal.x * (0.1f);
+            slopeVelocity.z += (1f - m_GroundNormal.y) * m_GroundNormal.z * (0.1f);
+            if (slopeVelocity.y > -gravity)
+                slopeVelocity.y = -gravity;
+            slopeVelocity += Vector3.down * -gravity * Time.deltaTime;
+            display.text = isSloped + " " + m_GroundNormal;
         }
         else {
-            //Debug.Log("TUSEM");
             // add air acceleration
             slopeVelocity = Vector3.zero;
             characterVelocity += worldspaceMoveInput * 25f * Time.deltaTime;
@@ -86,17 +91,22 @@ public class PlayerMovement : MonoBehaviour {
             // apply the gravity to the velocity
             characterVelocity += Vector3.down * -gravity * Time.deltaTime;
         }
-
-        controller.Move((characterVelocity + slopeVelocity) * Time.deltaTime);
+        // Debug.Log(characterVelocity + slopeVelocity);
+         controller.Move((characterVelocity + slopeVelocity) * Time.deltaTime);
     }
 
     void GroundCheck() {
-        float chosenGroundCheckDistance = isGrounded ? (controller.skinWidth + 0.05f) : 0.07f;
+        float chosenGroundCheckDistance = 0.06f;
+        // float chosenGroundCheckDistance = isGrounded ? (controller.skinWidth + 0.05f) : 0.07f;
+        // chosenGroundCheckDistance = isSloped ? chosenGroundCheckDistance + 2f : chosenGroundCheckDistance;
         isSloped = false;
         isGrounded = false;
         m_GroundNormal = Vector3.up;
-        if (Physics.CapsuleCast(GetCapsuleBottomHemisphere(), GetCapsuleTopHemisphere(controller.height),
-            controller.radius, Vector3.down, out RaycastHit hit, chosenGroundCheckDistance, -1,
+        Vector3 transformUp = transform.up;
+        Vector3 transformPosition = transform.position;
+        Vector3 point1 = transformPosition + (transformUp * controller.radius);
+        Vector3 point2 = transformPosition + (transformUp * (controller.height - controller.radius));
+        if (Physics.CapsuleCast(point1, point2, controller.radius, Vector3.down, out RaycastHit hit, chosenGroundCheckDistance, -1,
             QueryTriggerInteraction.Ignore)) {
             m_GroundNormal = hit.normal;
             if (Vector3.Dot(hit.normal, transform.up) > 0f && IsNormalUnderSlopeLimit(m_GroundNormal)) {
@@ -106,9 +116,8 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
             else if (Vector3.Dot(hit.normal, transform.up) > 0f) {
-                Debug.Log("HAHA");
                 isSloped = true;
-            }
+            } 
         }
     }
 
