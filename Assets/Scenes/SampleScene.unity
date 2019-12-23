@@ -232,7 +232,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.001
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &304886026
 Transform:
   m_ObjectHideFlags: 0
@@ -262,15 +262,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 071f4fa736713604cb40cbfddee55117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 304886025}
-  speed: 12
-  characterVelocity: {x: 0, y: 0, z: 0}
-  slopeVelocity: {x: 0, y: 0, z: 0}
-  isGrounded: 0
-  isGroundedC: 0
-  isSloped: 0
-  jumpForce: 6
-  gravity: -9.81
+  m_WalkSpeed: 6
+  m_RunSpeed: 11
+  m_LimitDiagonalSpeed: 1
+  m_ToggleRun: 0
+  m_JumpSpeed: 12
+  m_Gravity: 20
+  m_FallingThreshold: 10
+  m_SlideWhenOverSlopeLimit: 1
+  m_SlideOnTaggedObjects: 0
+  m_SlideSpeed: 12
+  m_AirControl: 0
+  m_AntiBumpFactor: 0.75
+  m_AntiBunnyHopFactor: 1
 --- !u!1 &482906283 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1355876594759577891, guid: ca82635c8c85fcc4fa27278f9334c825,
@@ -1208,7 +1212,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2029250240}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 304886026}
