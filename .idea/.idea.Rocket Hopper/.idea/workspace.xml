@@ -2,9 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6da04fcb-8e56-429e-b1f6-c6104ac4c76c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Blender.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Blender/bazookaV5.blend" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Blender/bazookaV5.blend.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Blender/unitySandbox.blend" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Blender/unitySandbox.blend.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Fonts.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Fonts/sans-serif.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Fonts/sans-serif.ttf.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Sripts.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Sripts/MouseLook.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Sripts/MouseLook.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Floor.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Floor.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Player/MouseLook.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Player/MouseLook.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/unitySandbox.blend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/unitySandbox.blend.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,26 +39,30 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Player/MouseLook.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/F58CDE91-96FF-4D57-AE94-5F019534AF41/51/bd11644b/NativeInputSystem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Assets/Player/MouseLook.cs" />
         <option value="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" />
       </list>
     </option>
   </component>
   <component name="ProjectId" id="1VJIIUBHqGdYX2roTXGtFeB5sHl" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -107,6 +135,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state width="938" height="348" key="GridCell.Tab.0.bottom" timestamp="1577048759591">
