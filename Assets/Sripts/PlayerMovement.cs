@@ -14,8 +14,7 @@ public class PlayerMovement : MonoBehaviour {
     public float maxSlideSpeed = 8.0f;
     public float m_AntiBumpFactor = 0.75f;
     public int jumpCooldown = 10;
-    public Text helperDisplay;
-    
+
     private Vector3 moveDirection = Vector3.zero;
     private bool isGrounded;
     private CharacterController controller;
@@ -27,15 +26,11 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 lastContactPoint;
     private bool canMove;
     private int remJumpCooldown;
-    private int currentHelper;
-    private GameObject interactingObject;
-    private GameObject camera;
-
+    
 
     private void Start() {
         //Nerabim vsakic ko se resetira nastavit controllerja
         controller = GetComponent<CharacterController>();
-        camera = GameObject.FindWithTag("MainCamera");
         speed = maxSpeed;
         // Tole je baje razdalja od sredine controllerja do "nog"
         distanceFromCenter = controller.height * 0.5f + controller.radius;
@@ -44,26 +39,11 @@ public class PlayerMovement : MonoBehaviour {
 
 
     private void Update() {
-        if (Input.GetButtonDown("Interact") && interactingObject && interactingObject.CompareTag("bazooka") ) {
-            // Debug.Log("Pobiram");
-            Destroy(interactingObject.GetComponent<BoxCollider>());
-            helperDisplay.text = "";
-            currentHelper = 0;
-            interactingObject.transform.parent = camera.transform;
-            interactingObject.transform.localPosition = new Vector3(0.35f, -0.03f, 0.58f);
-            interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-2.159f, -6.595f, 0));
-            interactingObject.transform.localScale = new Vector3(2, 2, 1);
-        }
+       
     }
 
 
     private void FixedUpdate() {
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
-
-        // If both horizontal and vertical are used simultaneously, limit speed (if allowed), so the total doesn't exceed normal move maxSpeed
-        float inputModifyFactor = (inputX != 0.0f && inputY != 0.0f) ? .7071f : 1.0f;
-
         if (isGrounded) {
             bool sliding = false;
             // Kot telesa pod tabo
@@ -150,19 +130,5 @@ public class PlayerMovement : MonoBehaviour {
         print("Ouch! Fell " + fallDistance + " units!");
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("bazooka")) {
-            helperDisplay.text = "Press <color=orange><b>F</b></color> to pick up the weapon!";
-            currentHelper = 1;
-            interactingObject = other.gameObject;
-        }
-    }
-
-
-    private void OnTriggerExit(Collider other) {
-        if (currentHelper != 0) {
-            helperDisplay.text = "";
-            currentHelper = 0;
-        }
-    }
+   
 }

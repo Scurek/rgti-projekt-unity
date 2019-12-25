@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\THE BEAST v2.0\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\THE BEAST v2.0\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Rocket Hopper.390415054.00" t="ExcludeRecursive" />
-    <e p="C:\Users\THE BEAST v2.0\UnityProjects\RGTI\Rocket Hopper" t="IncludeRecursive">
+    <e p="C:\Users\Uroš\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Uroš\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Rocket Hopper.-555181741.00" t="ExcludeRecursive" />
+    <e p="E:\Programi\Unity\Projekti\RGTI\Rocket Hopper" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="CursorsAndCrosshairs" t="Include">
+          <e p="CursorChanger.cs" t="Include" />
+        </e>
         <e p="Plugins" t="Include">
           <e p="GitHub" t="Include">
             <e p="Editor" t="Include">
@@ -18,8 +21,11 @@
           </e>
         </e>
         <e p="Sripts" t="Include">
+          <e p="Game.cs" t="Include" />
           <e p="MouseLook.cs" t="Include" />
           <e p="PlayerMovement.cs" t="Include" />
+          <e p="PlayerShooting.cs" t="Include" />
+          <e p="Rocket.cs" t="Include" />
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />
