@@ -2,8 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6da04fcb-8e56-429e-b1f6-c6104ac4c76c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/america_f_yeah_cut.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/america_f_yeah_cut.mp3.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/ammoCrate.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/ammoCrate.mp3.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_explosion3.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_explosion3.mp3.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_shoot3.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_shoot3.mp3.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/rocketV2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/rocketV2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Sripts/PlayerShooting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerShooting.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Sripts/Rocket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/Rocket.cs" afterDir="false" />
@@ -30,9 +40,9 @@
         <option value="$PROJECT_DIR$/Assets/Player/MouseLook.cs" />
         <option value="$PROJECT_DIR$/Assets/Player/PlayerMovement.cs" />
         <option value="$PROJECT_DIR$/Assets/Sripts/Game.cs" />
+        <option value="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" />
         <option value="$PROJECT_DIR$/Assets/Sripts/PlayerShooting.cs" />
         <option value="$PROJECT_DIR$/Assets/Sripts/Rocket.cs" />
-        <option value="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" />
       </list>
     </option>
   </component>
@@ -100,7 +110,7 @@
       <workItem from="1577050995421" duration="729000" />
       <workItem from="1577109100114" duration="2101000" />
       <workItem from="1577293679574" duration="14501000" />
-      <workItem from="1577376332227" duration="2312000" />
+      <workItem from="1577376332227" duration="4497000" />
     </task>
     <servers />
   </component>

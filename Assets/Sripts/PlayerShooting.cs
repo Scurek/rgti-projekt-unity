@@ -11,6 +11,7 @@ public class PlayerShooting : MonoBehaviour {
     private GameObject bazookaExit;
     private Camera kamera;
     private PlayerMovement playerMovement;
+    private AudioSource rocketFireSound;
     
     private int currentHelper;
     public Text helperDisplay;
@@ -19,6 +20,7 @@ public class PlayerShooting : MonoBehaviour {
         //kamera = GameObject.FindWithTag("MainCamera");
         kamera = Camera.main;
         playerMovement = GetComponent<PlayerMovement>();
+        rocketFireSound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -35,6 +37,8 @@ public class PlayerShooting : MonoBehaviour {
                     targetPoint = ray.GetPoint(1000);
                 //Debug.Log(targetPoint);
                 Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
+                rocketFireSound.Stop();
+                rocketFireSound.Play();
                 rocket.InitRocket(bazookaExit.transform, targetPoint, playerMovement);
             }
         }
@@ -44,7 +48,7 @@ public class PlayerShooting : MonoBehaviour {
             helperDisplay.text = "";
             currentHelper = 0;
             interactingObject.transform.parent = kamera.transform;
-            interactingObject.transform.localPosition = new Vector3(0.35f, -0.03f, 0.58f);
+            interactingObject.transform.localPosition = new Vector3(0.371f, -0.037f, 0.399f);
             interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-2.159f, -6.595f, 0));
             interactingObject.transform.localScale = new Vector3(2, 2, 1);
             bazooka = interactingObject;

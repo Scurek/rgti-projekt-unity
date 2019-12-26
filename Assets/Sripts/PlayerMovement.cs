@@ -142,9 +142,10 @@ public class PlayerMovement : MonoBehaviour {
         //explosionMoveVelocity += explosionPlayer;
         explosionMoveVelocity.x += explosionPlayer.x;
         explosionMoveVelocity.z += explosionPlayer.z;
-        Debug.Log(explosionPlayer);
         if (moveDirection.y < 0) {
             moveDirection.y = explosionPlayer.y;
+            //controller.Move(Vector3.up * (moveDirection.y * Time.deltaTime));
+            isGrounded = false;
         } else {
             moveDirection.y += explosionPlayer.y;
         }

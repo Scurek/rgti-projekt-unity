@@ -7,13 +7,15 @@ using UnityEngine.UI;
 public class Rocket : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float velocity;
+    public float velocity = 2;
     private PlayerMovement playerMovement;
     private Vector3 direction;
     private bool visible;
+    private AudioSource explosionSound;
     
     void Start() {
         gameObject.SetActive(false);
+        explosionSound = GetComponent<AudioSource>();
     }
     
     public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
@@ -46,13 +48,16 @@ public class Rocket : MonoBehaviour
     }
     
     void Explode() {
+        AudioSource.PlayClipAtPoint(explosionSound.clip, transform.position);
+        // explosionSound.Stop();
+        // explosionSound.Play();
         playerMovement.explosionPush(this.transform.position);
     }
     
     
 
     void ExplodeGFX() {
-        Debug.Log("BOOM");
+        
     }
 
 
