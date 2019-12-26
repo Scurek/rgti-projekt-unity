@@ -9,13 +9,16 @@ public class PlayerMovement : MonoBehaviour {
     public float maxSpeedSprint = 11.0f;
     public float jumpSpeed = 10.0f;
     public float gravity = 20.0f;
+    public float upor = 0.01f;
+    public float uporOnGround = 0.4f;
     public float fallingDMGTreshold = 10.0f;
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 8.0f;
     public float m_AntiBumpFactor = 0.75f;
     public int jumpCooldown = 10;
-
-    private Vector3 moveDirection = Vector3.zero;
+    
+    public Vector3 moveDirection = Vector3.zero;
+    public Vector3 explosionMoveVelocity = Vector3.zero;
     private bool isGrounded;
     private CharacterController controller;
     private float speed;
@@ -115,9 +118,11 @@ public class PlayerMovement : MonoBehaviour {
             }
         }
         moveDirection.y -= gravity * Time.deltaTime;
-        controller.Move(moveDirection * Time.deltaTime);
+        controller.Move((moveDirection + explosionMoveVelocity) * Time.deltaTime);
         //https://docs.unity3d.com/ScriptReference/CharacterController-collisionFlags.html
         isGrounded = (controller.collisionFlags & CollisionFlags.Below) != 0;
+        explosionMoveVelocity.x = dodajUpor(explosionMoveVelocity.x, isGrounded);
+        explosionMoveVelocity.z = dodajUpor(explosionMoveVelocity.z, isGrounded);
     }
 
 
@@ -130,5 +135,57 @@ public class PlayerMovement : MonoBehaviour {
         print("Ouch! Fell " + fallDistance + " units!");
     }
 
-   
+    public void explosionPush(Vector3 explosionPosition) {
+        Vector3 explosionPlayer = this.transform.position - explosionPosition;
+        float power = powerScalar(Vector3.Magnitude(explosionPlayer));
+        explosionPlayer = Vector3.Normalize(explosionPlayer) * power;
+        //explosionMoveVelocity += explosionPlayer;
+        explosionMoveVelocity.x += explosionPlayer.x;
+        explosionMoveVelocity.z += explosionPlayer.z;
+        Debug.Log(explosionPlayer);
+        if (moveDirection.y < 0) {
+            moveDirection.y = explosionPlayer.y;
+        } else {
+            moveDirection.y += explosionPlayer.y;
+        }
+        
+    }
+    
+    public float powerScalar(float distance) {
+        int maxPower = 32;
+        float power = 0;
+        if(distance > 20){
+            return 0;
+        }
+        if(distance > 6){
+            maxPower /= 2;
+        }
+        if(distance < 0) {
+            power = 0;
+        } else{
+            //power = Math.pow(distance - .5, -2);
+    
+            if(distance > 20){
+                return 0;
+            }
+            if(distance > 15){
+                maxPower /= 2;
+            }
+            power = (float)((Math.Exp(-(distance-2)) + 1.5) * 30);
+            if(power > maxPower){
+                power = maxPower;
+            }
+        }
+        return power;
+    }
+    
+    private float dodajUpor(float hitrost, bool onGround) {
+        if (hitrost < 0.01 && hitrost > -0.01) {
+            return 0;
+        }
+        if (onGround) {
+            return hitrost * (1f - uporOnGround);
+        }
+        return hitrost * (1f - upor);
+    }
 }

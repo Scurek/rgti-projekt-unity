@@ -8,7 +8,7 @@ public class Rocket : MonoBehaviour
 {
     // Start is called before the first frame update
     public float velocity;
-    private CharacterController player;
+    private PlayerMovement playerMovement;
     private Vector3 direction;
     private bool visible;
     
@@ -16,14 +16,14 @@ public class Rocket : MonoBehaviour
         gameObject.SetActive(false);
     }
     
-    public void InitRocket(Transform transform, Vector3 targetPoint, CharacterController player) {
+    public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
         // this.transform.rotation = Quaternion.LookRotation(transform.forward);
         this.transform.rotation = transform.rotation;
         //direction = transform.forward;
         direction = Vector3.Normalize(targetPoint - transform.position);
         //this.transform.position = transform.position + direction * 1.2f;
         this.transform.position = transform.position;
-        this.player = player;
+        this.playerMovement = playerMovement;
         visible = true;
         gameObject.SetActive(true);
         Invoke("DestroyRocket", 2.0f);
@@ -46,8 +46,10 @@ public class Rocket : MonoBehaviour
     }
     
     void Explode() {
-        player.Move(-direction * 10);
+        playerMovement.explosionPush(this.transform.position);
     }
+    
+    
 
     void ExplodeGFX() {
         Debug.Log("BOOM");
@@ -55,7 +57,7 @@ public class Rocket : MonoBehaviour
 
 
     private void OnTriggerEnter(Collider other) {
-        if (visible) {
+        if (visible && !(other.gameObject && other.gameObject.name == "Player")) {
             DestroyRocket();
         }
     }

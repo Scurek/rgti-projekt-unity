@@ -10,7 +10,7 @@ public class PlayerShooting : MonoBehaviour {
     private GameObject bazooka;
     private GameObject bazookaExit;
     private Camera kamera;
-    private CharacterController controller;
+    private PlayerMovement playerMovement;
     
     private int currentHelper;
     public Text helperDisplay;
@@ -18,7 +18,7 @@ public class PlayerShooting : MonoBehaviour {
     void Start() {
         //kamera = GameObject.FindWithTag("MainCamera");
         kamera = Camera.main;
-        controller = GetComponent<CharacterController>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
@@ -35,7 +35,7 @@ public class PlayerShooting : MonoBehaviour {
                     targetPoint = ray.GetPoint(1000);
                 //Debug.Log(targetPoint);
                 Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
-                rocket.InitRocket(bazookaExit.transform, targetPoint, controller);
+                rocket.InitRocket(bazookaExit.transform, targetPoint, playerMovement);
             }
         }
         if (Input.GetButtonDown("Interact") && interactingObject && interactingObject.CompareTag("bazooka") ) {
