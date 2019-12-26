@@ -2,21 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6da04fcb-8e56-429e-b1f6-c6104ac4c76c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Audio.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/america_f_yeah_cut.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/america_f_yeah_cut.mp3.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/ammoCrate.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/ammoCrate.mp3.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_explosion3.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_explosion3.mp3.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_shoot3.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Audio/rocket_shoot3.mp3.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/unitySandbox.blend" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/unitySandbox.blend.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Rocket Hopper/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/rocketV2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/rocketV2.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerMovement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Sripts/PlayerShooting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/PlayerShooting.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Sripts/Rocket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sripts/Rocket.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/InputManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +104,7 @@
       <workItem from="1577050995421" duration="729000" />
       <workItem from="1577109100114" duration="2101000" />
       <workItem from="1577293679574" duration="14501000" />
-      <workItem from="1577376332227" duration="4497000" />
+      <workItem from="1577376332227" duration="5098000" />
     </task>
     <servers />
   </component>
