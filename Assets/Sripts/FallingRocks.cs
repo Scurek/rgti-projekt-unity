@@ -8,6 +8,7 @@ public class FallingRocks : MonoBehaviour {
     private List<Rigidbody> rockBodies = new List<Rigidbody>();
     private GameObject moveTarget;
     private GameObject moveTarget2;
+    private BoxCollider wall;
 
     private GameObject player;
 
@@ -18,8 +19,8 @@ public class FallingRocks : MonoBehaviour {
     private Vector3 direction;
 
     private short step;
-    public Transform moveTargetTransform;
-    public Transform moveTarget2Transform;
+    private Transform moveTargetTransform;
+    private Transform moveTarget2Transform;
 
     public float journeyTime = 1.0f;
     private float startTime;
@@ -39,6 +40,9 @@ public class FallingRocks : MonoBehaviour {
         moveTargetTransform = moveTarget.transform;
         moveTarget2 = GameObject.Find("MoveTarget2");
         moveTarget2Transform = moveTarget2.transform;
+        wall = GameObject.Find("Wall").GetComponent<BoxCollider>();
+        Debug.Log(wall);
+        wall.enabled = false;
     }
     
     // Update is called once per frame
@@ -138,6 +142,8 @@ public class FallingRocks : MonoBehaviour {
         foreach (var rockBody in rockBodies) {
             rockBody.constraints = RigidbodyConstraints.FreezeAll;
         }
+
+        wall.enabled = true;    
         playerController.enabled = true;
         Game.SharedInstance.disableControlls = false;
     }
