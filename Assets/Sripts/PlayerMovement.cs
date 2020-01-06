@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,25 +12,28 @@ public class PlayerMovement : MonoBehaviour {
     public float gravity = 20.0f;
     public float upor = 0.01f;
     public float uporOnGround = 0.4f;
-    public float fallingDMGTreshold = 10.0f;
+
+    public float fallingDMGTreshold = 0.0f;
+
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 8.0f;
     public float m_AntiBumpFactor = 0.75f;
     public int jumpCooldown = 10;
-    
+
     public Vector3 moveDirection = Vector3.zero;
     public Vector3 explosionMoveVelocity = Vector3.zero;
     private bool isGrounded;
     private CharacterController controller;
     private float speed;
     private RaycastHit hit;
-    // private float m_FallStartLevel;
+    private float fallFrom;
     private bool falling;
     private float distanceFromCenter;
     private Vector3 lastContactPoint;
     private bool canMove;
     private int remJumpCooldown;
-    
+
+
 
     private void Start() {
         //Nerabim vsakic ko se resetira nastavit controllerja
@@ -42,11 +46,12 @@ public class PlayerMovement : MonoBehaviour {
 
 
     private void Update() {
-       
     }
 
 
     private void FixedUpdate() {
+        if (!controller.enabled)
+            return;
         if (isGrounded) {
             bool sliding = false;
             // Kot telesa pod tabo
@@ -62,18 +67,18 @@ public class PlayerMovement : MonoBehaviour {
                     sliding = true;
                 }
             }
-            
+
             if (falling) {
                 falling = false;
-                // if (transform.position.y < m_FallStartLevel - fallingDMGTreshold)
-                // {
-                //     OnFell(m_FallStartLevel - transform.position.y);
-                // }
+                // print(transform.position.y + " " + fallFrom + " " + fallingDMGTreshold);
+                if (transform.position.y < fallFrom - fallingDMGTreshold) {
+                    OnFell(fallFrom - fallingDMGTreshold - transform.position.y);
+                }
             }
 
             // Sprint
             speed = Input.GetKey(KeyCode.LeftShift) ? maxSpeedSprint : maxSpeed;
-            
+
             if (sliding) // || (m_SlideOnTaggedObjects && hit.collider.tag == "Slide")
             {
                 // Tole naj bi zračunalo smer drsenja
@@ -84,19 +89,24 @@ public class PlayerMovement : MonoBehaviour {
                 canMove = false;
             }
             else {
-                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                if (Game.SharedInstance.disableControlls)
+                    moveDirection = new Vector3();
+                else
+                    moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 if (moveDirection.magnitude > 1) {
                     moveDirection /= moveDirection.magnitude;
                 }
+
                 //Tole sm najdu ko sm nekej za premikanje gledou
                 moveDirection.y = -m_AntiBumpFactor;
                 moveDirection = transform.TransformDirection(moveDirection) * speed;
                 canMove = true;
             }
+
             if (!Input.GetButtonDown("Jump")) {
                 remJumpCooldown--;
             }
-            else if (remJumpCooldown < 0) {
+            else if (remJumpCooldown < 0 && !Game.SharedInstance.disableControlls) {
                 moveDirection.y = jumpSpeed;
                 remJumpCooldown = jumpCooldown;
             }
@@ -104,23 +114,30 @@ public class PlayerMovement : MonoBehaviour {
         else {
             if (!falling) {
                 falling = true;
-                // m_FallStartLevel = transform.position.y; //Padanja z razdaljo
+                fallFrom = transform.position.y; //Padanja z razdaljo
             }
+
             if (canMove) {
                 float fallingSpeed = moveDirection.y;
                 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 if (moveDirection.magnitude > 1) {
                     moveDirection /= moveDirection.magnitude;
                 }
+
                 moveDirection *= speed;
                 moveDirection.y = fallingSpeed;
                 moveDirection = transform.TransformDirection(moveDirection);
             }
         }
+
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move((moveDirection + explosionMoveVelocity) * Time.deltaTime);
         //https://docs.unity3d.com/ScriptReference/CharacterController-collisionFlags.html
         isGrounded = (controller.collisionFlags & CollisionFlags.Below) != 0;
+        if (controller.collisionFlags == CollisionFlags.Above) {
+            moveDirection.y = 0;
+        }
+
         explosionMoveVelocity.x = dodajUpor(explosionMoveVelocity.x, isGrounded);
         explosionMoveVelocity.z = dodajUpor(explosionMoveVelocity.z, isGrounded);
     }
@@ -129,10 +146,18 @@ public class PlayerMovement : MonoBehaviour {
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
         lastContactPoint = hit.point;
+        if (falling && Vector3.Angle(hit.normal, Vector3.up) > 90) {
+            moveDirection.y = 0;
+        }
+
+        // if (falling && moveDirection.y > 0) {
+        //     moveDirection.y = 0;
+        // }
     }
-    
+
     private void OnFell(float fallDistance) {
-        print("Ouch! Fell " + fallDistance + " units!");
+        // print("Ouch! Fell " + fallDistance + " units!");
+        Game.SharedInstance.damage(fallDistance);
     }
 
     public void explosionPush(Vector3 explosionPosition) {
@@ -146,47 +171,55 @@ public class PlayerMovement : MonoBehaviour {
             moveDirection.y = explosionPlayer.y;
             //controller.Move(Vector3.up * (moveDirection.y * Time.deltaTime));
             isGrounded = false;
-        } else {
+        }
+        else {
             moveDirection.y += explosionPlayer.y;
         }
-        
     }
-    
+
     public float powerScalar(float distance) {
         int maxPower = 32;
         float power = 0;
-        if(distance > 20){
+        if (distance > 20) {
             return 0;
         }
-        if(distance > 6){
+
+        if (distance > 6) {
             maxPower /= 2;
         }
-        if(distance < 0) {
+
+        if (distance < 0) {
             power = 0;
-        } else{
+        }
+        else {
             //power = Math.pow(distance - .5, -2);
-    
-            if(distance > 20){
+
+            if (distance > 20) {
                 return 0;
             }
-            if(distance > 15){
+
+            if (distance > 15) {
                 maxPower /= 2;
             }
-            power = (float)((Math.Exp(-(distance-2)) + 1.5) * 30);
-            if(power > maxPower){
+
+            power = (float) ((Math.Exp(-(distance - 2)) + 1.5) * 30);
+            if (power > maxPower) {
                 power = maxPower;
             }
         }
+
         return power;
     }
-    
+
     private float dodajUpor(float hitrost, bool onGround) {
         if (hitrost < 0.01 && hitrost > -0.01) {
             return 0;
         }
+
         if (onGround) {
             return hitrost * (1f - uporOnGround);
         }
+
         return hitrost * (1f - upor);
     }
 }

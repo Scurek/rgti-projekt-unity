@@ -6,6 +6,10 @@ TagManager:
   tags:
   - bazooka
   - torchlight
+  - healthbar
+  - ammocounter
+  - player
+  - fallingRock
   layers:
   - Default
   - TransparentFX

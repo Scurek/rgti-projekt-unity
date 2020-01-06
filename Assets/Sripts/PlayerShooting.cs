@@ -26,10 +26,11 @@ public class PlayerShooting : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetButtonDown("Fire1") && bazookaExit) {
+        if (Input.GetButtonDown("Fire1") && bazookaExit && Game.SharedInstance.ammo > 0) {
             Rocket rocket = Game.SharedInstance.GetRocketFromPool();
             if (rocket) {
-                Ray ray = kamera.ViewportPointToRay(new Vector3(0.5F, 0.4F, 0));
+                Game.SharedInstance.addAmmo(-1);
+                Ray ray = kamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
                 RaycastHit hit;
                 Vector3 targetPoint;
                 if (Physics.Raycast(ray, out hit))
@@ -53,6 +54,7 @@ public class PlayerShooting : MonoBehaviour {
                 interactingObject.transform.localPosition = new Vector3(-2f, -0.6f, -0.7f);
                 interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 interactingObject.transform.localScale = new Vector3(2, 2, 2);
+                Game.SharedInstance.enableHealth();
             } else if (interactingObject.CompareTag("bazooka")) {
                 // Debug.Log("Pobiram");
                 Destroy(interactingObject.GetComponent<BoxCollider>());
@@ -66,13 +68,20 @@ public class PlayerShooting : MonoBehaviour {
                 // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-111.78f, -107.26f, 365.85f));
                 // interactingObject.transform.localScale = new Vector3(0.55f, 0.7f, 0.7f);
                 
-                // interactingObject.transform.localPosition = new Vector3(1f, -0.7f, -0.6f);
-                interactingObject.transform.localPosition = new Vector3(1f, -0.7f, 1.5f);
-                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-87.437f, 0.4f, 90f));
-                interactingObject.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                // interactingObject.transform.localPosition = new Vector3(1f, -0.7f, 1.5f);
+                // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-87.437f, 180f + 0.4f, 90f));
+                // interactingObject.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                interactingObject.transform.localPosition = new Vector3(0.609f, -0.282f, 0.83f);
+                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-104.734f, -84.42f, -7.3f));
+                interactingObject.transform.localScale = new Vector3(0.6f, 1.2f, 1.2f);
                 bazooka = interactingObject;
                 bazookaExit = bazooka.transform.Find("ExitPoint").gameObject;
+                Game.SharedInstance.enableAmmo();
             }
+        }
+
+        if (Input.GetKeyDown("k")) {
+            Game.SharedInstance.damage(100);
         }
     }
     

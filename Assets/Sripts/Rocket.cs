@@ -21,6 +21,7 @@ public class Rocket : MonoBehaviour
     public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
         // this.transform.rotation = Quaternion.LookRotation(transform.forward);
         this.transform.rotation = transform.rotation;
+        // this.transform.Rotate(0, 0, 0);
         //direction = transform.forward;
         direction = Vector3.Normalize(targetPoint - transform.position);
         //this.transform.position = transform.position + direction * 1.2f;
