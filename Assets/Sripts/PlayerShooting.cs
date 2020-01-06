@@ -27,17 +27,16 @@ public class PlayerShooting : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (Input.GetButtonDown("Fire1") && bazookaExit) {
-            Debug.Log("LALAL");
             Rocket rocket = Game.SharedInstance.GetRocketFromPool();
-            Debug.Log(rocket);
             if (rocket) {
-                Ray ray = kamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+                Ray ray = kamera.ViewportPointToRay(new Vector3(0.5F, 0.4F, 0));
                 RaycastHit hit;
                 Vector3 targetPoint;
                 if (Physics.Raycast(ray, out hit))
                     targetPoint = hit.point;
                 else
                     targetPoint = ray.GetPoint(1000);
+                // targetPoint += Vector3.down*2;
                 //Debug.Log(targetPoint);
                 Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
                 rocketFireSound.Stop();
@@ -59,9 +58,12 @@ public class PlayerShooting : MonoBehaviour {
                 Destroy(interactingObject.GetComponent<BoxCollider>());
                 removeObjectFromInteractingObjects(interactingObject);
                 interactingObject.transform.parent = kamera.transform;
-                interactingObject.transform.localPosition = new Vector3(0.371f, -0.037f, 0.399f);
-                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-2.159f, -6.595f, 0));
-                interactingObject.transform.localScale = new Vector3(2, 2, 1);
+                interactingObject.transform.localPosition = new Vector3(0.297f, -0.301f, 0.825f);
+                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-111.78f, -107.26f, 365.85f));
+                interactingObject.transform.localScale = new Vector3(0.55f, 0.7f, 0.7f);
+                // interactingObject.transform.localPosition = new Vector3(0.371f, -0.037f, 0.399f);
+                // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-2.159f, -6.595f, 0));
+                // interactingObject.transform.localScale = new Vector3(2, 2, 1);
                 bazooka = interactingObject;
                 bazookaExit = bazooka.transform.Find("ExitPoint").gameObject;
             }
