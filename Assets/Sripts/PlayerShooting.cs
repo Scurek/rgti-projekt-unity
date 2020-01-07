@@ -55,6 +55,7 @@ public class PlayerShooting : MonoBehaviour {
                 interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 interactingObject.transform.localScale = new Vector3(2, 2, 2);
                 Game.SharedInstance.enableHealth();
+                Game.SharedInstance.enableLighting();
             } else if (interactingObject.CompareTag("bazooka")) {
                 // Debug.Log("Pobiram");
                 Destroy(interactingObject.GetComponent<BoxCollider>());

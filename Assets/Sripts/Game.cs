@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
@@ -34,13 +36,14 @@ public class Game : MonoBehaviour {
     
     public Vector3 spawnPosition = new Vector3(-81.9f, 25.8f, 49.7f);
 
-    public bool disableControlls;
+    public bool disableControlls = true;
 
     private GameObject timerContainer;
     private Text timer;
     public bool stopWatchEnabled;
     Stopwatch stopWatch;
-    
+    public bool intro = true;
+
     void Awake() {
         SharedInstance = this;
     }
@@ -75,6 +78,11 @@ public class Game : MonoBehaviour {
             TimeSpan ts = stopWatch.Elapsed;
             timer.text = $"{ts.Minutes:00}:{ts.Seconds:00}";
         }
+
+        if (intro && RenderSettings.reflectionIntensity >= 0.1f) {
+            RenderSettings.reflectionIntensity *= 0.99f;
+        }
+        
     }
     
     public void startStopwatch() {
@@ -145,5 +153,16 @@ public class Game : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public void disableLighting() {
+        RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.ambientLight = Color.black;
+        RenderSettings.reflectionIntensity = 0;
+    }
+
+    public void enableLighting() {
+        RenderSettings.ambientMode = AmbientMode.Skybox;
+        RenderSettings.reflectionIntensity = 0.5f;
     }
 }
