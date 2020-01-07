@@ -18,21 +18,22 @@ public class PlayerMovement : MonoBehaviour {
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 6.0f;
     public float m_AntiBumpFactor = 0.75f;
-    public float jumpCooldown = 1f;
+    public float jumpCooldown = 0.1f;
 
     public Vector3 moveDirection = Vector3.zero;
     public Vector3 explosionMoveVelocity = Vector3.zero;
-    private bool isGrounded;
+    public bool isGrounded;
     private CharacterController controller;
     private float speed;
     private RaycastHit hit;
     private float fallFrom;
-    private bool falling;
+    public bool falling;
     private float distanceFromCenter;
     private Vector3 lastContactPoint;
     private bool canMove;
     public float remJumpCooldown;
     private Game game;
+    public bool sliding;
 
 
 
@@ -54,8 +55,11 @@ public class PlayerMovement : MonoBehaviour {
     private void FixedUpdate() {
         if (!controller.enabled)
             return;
+        if (remJumpCooldown > 0) {
+            remJumpCooldown -= Time.deltaTime * game.globalPlayerSpeedMult;
+        }
         if (isGrounded) {
-            bool sliding = false;
+            sliding = false;
             // Kot telesa pod tabo
             if (Physics.Raycast(transform.position, -Vector3.up, out hit, distanceFromCenter)) {
                 if (Vector3.Angle(hit.normal, Vector3.up) > controller.slopeLimit) {
@@ -108,8 +112,6 @@ public class PlayerMovement : MonoBehaviour {
             if (Input.GetButtonDown("Jump") && remJumpCooldown <= 0 && !game.disableControlls) {
                 moveDirection.y = jumpSpeed;
                 remJumpCooldown = jumpCooldown;
-            } else if (remJumpCooldown > 0) {
-                remJumpCooldown -= Time.deltaTime * game.globalPlayerSpeedMult;
             }
         }
         else {
@@ -117,7 +119,6 @@ public class PlayerMovement : MonoBehaviour {
                 falling = true;
                 fallFrom = transform.position.y; //Padanja z razdaljo
             }
-
             if (canMove) {
                 float fallingSpeed = moveDirection.y;
                 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -130,7 +131,6 @@ public class PlayerMovement : MonoBehaviour {
                 moveDirection = transform.TransformDirection(moveDirection);
             }
         }
-
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move((moveDirection + explosionMoveVelocity) * (Time.deltaTime * game.globalPlayerSpeedMult));
         //https://docs.unity3d.com/ScriptReference/CharacterController-collisionFlags.html
@@ -147,8 +147,9 @@ public class PlayerMovement : MonoBehaviour {
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
         lastContactPoint = hit.point;
-        if (falling && Vector3.Angle(hit.normal, Vector3.up) > 90) {
+        if (falling && Vector3.Angle(hit.normal, Vector3.up) > 95) {
             moveDirection.y = 0;
+            Debug.Log( Vector3.Angle(hit.normal, Vector3.up));
         }
 
         // if (falling && moveDirection.y > 0) {

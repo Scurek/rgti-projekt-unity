@@ -19,8 +19,8 @@ public class MouseLook : MonoBehaviour {
     void Update() {
         if (!playerController.enabled || Game.SharedInstance.disableControlls)
             return;
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime * Game.SharedInstance.globalPlayerSpeedMult;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime * Game.SharedInstance.globalPlayerSpeedMult;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);

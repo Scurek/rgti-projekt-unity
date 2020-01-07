@@ -172,6 +172,11 @@ public class Game : MonoBehaviour {
         crosshair.SetActive(true);
     }
 
+    public void refillAmmo() {
+        ammo = maxAmmo;
+        updateAmmoCounter();
+    }
+
     public bool hasAmmo() {
         return ammo > 0;
     }

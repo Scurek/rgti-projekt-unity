@@ -43,7 +43,7 @@ public class arrowTrap : MonoBehaviour {
                 playerController.enabled = true;
             }
             float distance = Vector3.Magnitude(player.transform.position - arrow.transform.position);
-            Debug.Log(distance);
+            // Debug.Log(distance);
             if (distance < 5f) {
                 step = 3;
                 activateSlowMo();

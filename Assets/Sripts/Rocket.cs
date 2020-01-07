@@ -19,13 +19,11 @@ public class Rocket : MonoBehaviour
     }
     
     public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
-        // this.transform.rotation = Quaternion.LookRotation(transform.forward);
-        this.transform.rotation = transform.rotation;
-        // this.transform.Rotate(0, 0, 0);
-        //direction = transform.forward;
+        // this.transform.rotation = transform.rotation;
         direction = Vector3.Normalize(targetPoint - transform.position);
-        //this.transform.position = transform.position + direction * 1.2f;
         this.transform.position = transform.position;
+        this.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        this.transform.Rotate(0, -90f, 0);
         this.playerMovement = playerMovement;
         visible = true;
         gameObject.SetActive(true);

@@ -55,7 +55,7 @@ public class PlayerShooting : MonoBehaviour {
                     targetPoint = ray.GetPoint(1000);
                 // targetPoint += Vector3.down*2;
                 //Debug.Log(targetPoint);
-                Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
+                // Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
                 rocketFireSound.Stop();
                 rocketFireSound.Play();
                 bazookaAnimator.SetBool(HasAmmo, game.hasAmmo());
@@ -83,17 +83,6 @@ public class PlayerShooting : MonoBehaviour {
                 Destroy(interactingObject.GetComponent<BoxCollider>());
                 removeObjectFromInteractingObjects(interactingObject);
                 interactingObject.transform.parent = kamera.transform;
-                
-                // interactingObject.transform.localPosition = new Vector3(0.371f, -0.037f, 0.399f);
-                // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-2.159f, -6.595f, 0));
-                // interactingObject.transform.localScale = new Vector3(2, 2, 1);
-                // interactingObject.transform.localPosition = new Vector3(0.297f, -0.301f, 0.825f);
-                // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-111.78f, -107.26f, 365.85f));
-                // interactingObject.transform.localScale = new Vector3(0.55f, 0.7f, 0.7f);
-                
-                // interactingObject.transform.localPosition = new Vector3(1f, -0.7f, 1.5f);
-                // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-87.437f, 180f + 0.4f, 90f));
-                // interactingObject.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 interactingObject.transform.localPosition = new Vector3(0.609f, -0.282f, 0.83f);
                 interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-14.734f, -84.42f, -7.3f));
                 interactingObject.transform.localScale = new Vector3(0.6f, 1.2f, 1.2f);
@@ -102,6 +91,11 @@ public class PlayerShooting : MonoBehaviour {
                 game.enableAmmo();
                 bazookaAnimator = bazooka.GetComponent<Animator>();
                 game.bazookaAnimator = bazookaAnimator;
+            } else if (interactingObject.CompareTag("ammoBox")) {
+                AudioSource ammoClip =  interactingObject.GetComponent<AudioSource>();
+                if (ammoClip)
+                    ammoClip.Play();
+                game.refillAmmo();
             }
         }
 
@@ -123,7 +117,7 @@ public class PlayerShooting : MonoBehaviour {
                 currentHelper = 2;
             }
             interactingObjects.Add(other.gameObject);
-        } else if (other.CompareTag("bazooka")) {
+        } else if (other.CompareTag("ammoBox")) {
             if (currentHelper < 1) {
                 game.displayText("ammo");
                 currentHelper = 1;
@@ -159,19 +153,21 @@ public class PlayerShooting : MonoBehaviour {
 
     private void removeObjectFromInteractingObjects(GameObject gameObject) {
         interactingObjects.Remove(gameObject);
+        currentHelper = 0;
         if (interactingObjects.Count < 1) {
             game.helperDisplay.text = "";
-            currentHelper = 0;
         }
         else {
             GameObject nextObject = findInteractingObject(interactingObjects);
+            
             if (nextObject.CompareTag("torchlight") && currentHelper < 3) {
                 game.displayText("torch");
                 currentHelper = 3;
             } else if (nextObject.CompareTag("bazooka") && currentHelper < 2) {
                 game.displayText("bazooka");
                 currentHelper = 2;
-            } else if (nextObject.CompareTag("bazooka") && currentHelper < 1) {
+            } else if (nextObject.CompareTag("ammoBox") && currentHelper < 1) {
+                Debug.Log(nextObject.name);
                 game.displayText("ammo");
                 currentHelper = 1;
             }
