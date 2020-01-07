@@ -13,12 +13,14 @@ public class Game : MonoBehaviour {
 
     public GameObject player;
     public CharacterController playerController;
+    private PlayerShooting playerShooting;
+    public Animator bazookaAnimator;
     
     public GameObject rocket;
     private static List <Rocket> rocketPool;
     public int rocketPoolSize = 2;
 
-    public bool healthEnabled = false;
+    public bool healthEnabled;
     private GameObject healthbarContainer;
     private GameObject healthbar;
     public float health = 100;
@@ -31,6 +33,12 @@ public class Game : MonoBehaviour {
     private int maxAmmo = 7;
     private GameObject crosshair;
     public bool shootingHUDEnabled;
+    
+    public bool specialEnabled;
+    private GameObject specialContainer;
+    private GameObject specialbar;
+    private float maxSpecial = 10f;
+    public float special = 10f;
     
     public int currentCheckpoint = 0;
     
@@ -45,6 +53,11 @@ public class Game : MonoBehaviour {
     public bool intro = true;
     
     public bool slowMotionEnabled;
+    private GameObject slowMotionOverlay;
+    public float globalSpeedMult = 1;
+    public float globalPlayerSpeedMult = 1;
+
+    
 
     void Awake() {
         SharedInstance = this;
@@ -53,6 +66,10 @@ public class Game : MonoBehaviour {
         healthbar = GameObject.FindGameObjectWithTag("healthbar");
         healthbarContainer = healthbar.transform.parent.gameObject;
         healthbarContainer.SetActive(false);
+        
+        specialbar = GameObject.Find("Specialbar");
+        specialContainer = specialbar.transform.parent.gameObject;
+        // specialContainer.SetActive(false);
         
         ammocounter = GameObject.FindGameObjectWithTag("ammocounter");
         ammocounterText = ammocounter.GetComponent<Text>();
@@ -68,6 +85,12 @@ public class Game : MonoBehaviour {
         
         player = GameObject.FindGameObjectWithTag("player");
         playerController = player.GetComponent<CharacterController>();
+        playerShooting = player.GetComponent<PlayerShooting>();
+
+        slowMotionOverlay = GameObject.Find("SlowMoOverlay");
+        slowMotionOverlay.SetActive(false);
+        specialEnabled = true;
+        special = maxSpecial;
         
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
@@ -76,6 +99,23 @@ public class Game : MonoBehaviour {
     }
 
     private void Update() {
+        if (specialEnabled) {
+            if (slowMotionEnabled && special > 0) {
+                special -= Time.deltaTime;
+                updateSpecialBar();
+            }
+            else if (slowMotionEnabled) {
+                resetGlobalSpeed();
+            }
+            else if (special < maxSpecial) {
+                special += Time.deltaTime;
+                if (special > maxSpecial) {
+                    special = maxSpecial;
+                }
+                updateSpecialBar();
+            }
+        }
+        
         if (stopWatchEnabled) {
             TimeSpan ts = stopWatch.Elapsed;
             timer.text = $"{ts.Minutes:00}:{ts.Seconds:00}";
@@ -85,6 +125,24 @@ public class Game : MonoBehaviour {
             RenderSettings.reflectionIntensity *= 0.99f;
         }
         
+    }
+    
+    public void resetGlobalSpeed() {
+        slowMotionEnabled = false;
+        slowMotionOverlay.SetActive(false);
+        globalSpeedMult = 1f;
+        globalPlayerSpeedMult = 1f;
+        if (bazookaAnimator)
+            bazookaAnimator.speed = 1f;
+    }
+
+    public void setGlobalSpeed() {
+        slowMotionEnabled = true;
+        slowMotionOverlay.SetActive(true);
+        globalSpeedMult = 0.25f;
+        globalPlayerSpeedMult = 0.35f;
+        if (bazookaAnimator)
+            bazookaAnimator.speed = globalPlayerSpeedMult;
     }
     
     public void startStopwatch() {
@@ -125,8 +183,13 @@ public class Game : MonoBehaviour {
     public void death() {
         teleportPlayer(spawnPosition);
         health = maxHealth;
-        updateHealthBar();
         ammo = maxAmmo;
+        special = maxSpecial;
+        updateHealthBar();
+        updateAmmoCounter();
+        updateSpecialBar();
+        if (slowMotionEnabled)
+            resetGlobalSpeed();
     }
 
     public void teleportPlayer(Vector3 newPosition) {
@@ -146,6 +209,10 @@ public class Game : MonoBehaviour {
     
     public void updateAmmoCounter() {
         ammocounterText.text = ammo + "/" + maxAmmo;
+    }
+    
+    public void updateSpecialBar() {
+        specialbar.transform.localScale = new Vector3(x: special / maxSpecial, y: 1f, z: 1f);
     }
 
     public List<Rocket> GetRocketPool() {

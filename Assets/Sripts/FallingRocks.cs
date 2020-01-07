@@ -45,7 +45,6 @@ public class FallingRocks : MonoBehaviour {
         moveTarget2 = GameObject.Find("MoveTarget2");
         moveTarget2Transform = moveTarget2.transform;
         wall = GameObject.Find("Wall").GetComponent<BoxCollider>();
-        Debug.Log(wall);
         wall.enabled = false;
         GameObject[] rockPots = GameObject.FindGameObjectsWithTag("rockPot");
         rockPotsCols = new List<BoxCollider>();

@@ -43,9 +43,9 @@ public class Rocket : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update() {
+    void FixedUpdate() {
         // transform.Translate( Time.deltaTime * direction);
-        transform.position += direction * velocity;
+        transform.position += direction * (velocity * Game.SharedInstance.globalSpeedMult);
     }
     
     void Explode() {
@@ -63,7 +63,7 @@ public class Rocket : MonoBehaviour
 
 
     private void OnTriggerEnter(Collider other) {
-        if (visible && !(other.gameObject && other.gameObject.name == "Player")) {
+        if (!other.isTrigger && visible && !(other.gameObject && other.gameObject.name == "Player")) {
             DestroyRocket();
         }
     }
