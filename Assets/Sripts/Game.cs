@@ -109,6 +109,10 @@ public class Game : MonoBehaviour {
         ammocounterContainer.SetActive(true);
         crosshair.SetActive(true);
     }
+
+    public bool hasAmmo() {
+        return ammo > 0;
+    }
     
     public void damage(float n) {
         health -= n;

@@ -103,10 +103,11 @@ public class PlayerMovement : MonoBehaviour {
                 canMove = true;
             }
 
-            if (!Input.GetButtonDown("Jump")) {
-                remJumpCooldown--;
+            if (!Input.GetButtonDown("Jump") || Game.SharedInstance.disableControlls) {
+                if (remJumpCooldown > 0)
+                    remJumpCooldown--;
             }
-            else if (remJumpCooldown < 0 && !Game.SharedInstance.disableControlls) {
+            else if (remJumpCooldown <= 0) {
                 moveDirection.y = jumpSpeed;
                 remJumpCooldown = jumpCooldown;
             }

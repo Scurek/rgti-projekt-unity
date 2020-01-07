@@ -14,12 +14,16 @@ public class PlayerShooting : MonoBehaviour {
     private Camera kamera;
     private PlayerMovement playerMovement;
     private AudioSource rocketFireSound;
+    private Animator bazookaAnimator;
     
     private int currentHelper; //1-Bazooka, 2-TorchLight
     public Text helperDisplay;
-    
-    
-    
+
+    public float crFireCooldown = 0f;
+    public float fireCooldown = 2f;
+    private static readonly int HasAmmo = Animator.StringToHash("HasAmmo");
+
+
     void Start() {
         //kamera = GameObject.FindWithTag("MainCamera");
         kamera = Camera.main;
@@ -29,14 +33,15 @@ public class PlayerShooting : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown("r")) {
-            if (!Game.SharedInstance.slowMotionEnabled) {
-                Time.timeScale = 0.1f;
-            }
-        }
-        if (Input.GetButtonDown("Fire1") && bazookaExit && Game.SharedInstance.ammo > 0) {
+        // if (Input.GetKeyDown("r")) {
+        //     if (!Game.SharedInstance.slowMotionEnabled) {
+        //         Time.timeScale = 0.1f;
+        //     }
+        // }
+        if (Input.GetButtonDown("Fire1") && bazookaExit && Game.SharedInstance.ammo > 0 && crFireCooldown <= 0) {
             Rocket rocket = Game.SharedInstance.GetRocketFromPool();
             if (rocket) {
+                crFireCooldown = fireCooldown;
                 Game.SharedInstance.addAmmo(-1);
                 Ray ray = kamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
                 RaycastHit hit;
@@ -50,8 +55,14 @@ public class PlayerShooting : MonoBehaviour {
                 Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
                 rocketFireSound.Stop();
                 rocketFireSound.Play();
+                bazookaAnimator.SetBool(HasAmmo, Game.SharedInstance.hasAmmo());
+                bazookaAnimator.Play("BazookaShoot", 0);
+                bazookaAnimator.Play("RocketShoot", 1);
                 rocket.InitRocket(bazookaExit.transform, targetPoint, playerMovement);
             }
+        }
+        else if (crFireCooldown > 0) {
+            crFireCooldown -= Time.deltaTime;
         }
         if (Input.GetButtonDown("Interact") && interactingObjects.Count > 0) {
             interactingObject = findInteractingObject(interactingObjects);
@@ -81,11 +92,12 @@ public class PlayerShooting : MonoBehaviour {
                 // interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-87.437f, 180f + 0.4f, 90f));
                 // interactingObject.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 interactingObject.transform.localPosition = new Vector3(0.609f, -0.282f, 0.83f);
-                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-104.734f, -84.42f, -7.3f));
+                interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(-14.734f, -84.42f, -7.3f));
                 interactingObject.transform.localScale = new Vector3(0.6f, 1.2f, 1.2f);
                 bazooka = interactingObject;
                 bazookaExit = bazooka.transform.Find("ExitPoint").gameObject;
                 Game.SharedInstance.enableAmmo();
+                bazookaAnimator = bazooka.GetComponent<Animator>();
             }
         }
 
