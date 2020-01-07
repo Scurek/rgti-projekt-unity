@@ -5,9 +5,8 @@ using UnityEngine;
 public class arrow : MonoBehaviour {
     // Start is called before the first frame update
     public Vector3 direction;
-    public float velocity = 0.4f;
-    public bool moving = true;
-    public arrowTrap trap;
+    public float velocity = 0.25f;
+    public bool moving = false;
     void Start() {
         direction = transform.forward;
         
@@ -20,7 +19,8 @@ public class arrow : MonoBehaviour {
     }
     
     private void OnTriggerEnter(Collider other) {
-        if (!other.isTrigger && enabled) {
+        if (!other.isTrigger && enabled && other.gameObject.name != "Crossbow") {
+            // Debug.Log(other.name);
             if (other.gameObject && other.gameObject.name == "Player") {
                 Game.SharedInstance.damage(100);
             }

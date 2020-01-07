@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerShooting : MonoBehaviour {
     // Start is called before the first frame update
-    private List<GameObject> interactingObjects = new List<GameObject>();
+    public List<GameObject> interactingObjects = new List<GameObject>();
     private GameObject interactingObject;
     //private GameObject kamera;
     private GameObject bazooka;
@@ -17,7 +17,6 @@ public class PlayerShooting : MonoBehaviour {
     private Animator bazookaAnimator;
     
     private int currentHelper; //1-Bazooka, 2-TorchLight
-    public Text helperDisplay;
 
     public float crFireCooldown = 0f;
     public float fireCooldown = 1.6f;
@@ -112,27 +111,42 @@ public class PlayerShooting : MonoBehaviour {
     }
     
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("torchlight") && currentHelper < 3) {
-            helperDisplay.text = "Press <color=orange><b>F</b></color> to pick up the flashlight!";
-            currentHelper = 3;
+        if (other.CompareTag("torchlight")) {
+            if (currentHelper < 3) {
+                game.displayText("torch");
+                currentHelper = 3;
+            }
             interactingObjects.Add(other.gameObject);
-        } else if (other.CompareTag("bazooka") && currentHelper < 2) {
-            helperDisplay.text = "Press <color=orange><b>F</b></color> to pick up the weapon!";
-            currentHelper = 2;
+        } else if (other.CompareTag("bazooka")) {
+            if (currentHelper < 2) {
+                game.displayText("bazooka");
+                currentHelper = 2;
+            }
+            interactingObjects.Add(other.gameObject);
+        } else if (other.CompareTag("bazooka")) {
+            if (currentHelper < 1) {
+                game.displayText("ammo");
+                currentHelper = 1;
+            }
             interactingObjects.Add(other.gameObject);
         }
     }
 
 
     private void OnTriggerExit(Collider other) {
-        removeObjectFromInteractingObjects(other.gameObject);
+        if (other.CompareTag("torchlight") || other.CompareTag("bazooka") || other.CompareTag("ammoBox"))
+            removeObjectFromInteractingObjects(other.gameObject);
     }
 
     private GameObject findInteractingObject(List<GameObject> interactingObjects) {
         short maxpriority = 0;
         GameObject found = null;
         foreach (var interactingObject in interactingObjects) {
-            if (interactingObject.CompareTag("bazooka") && maxpriority < 2) {
+            if (interactingObject.CompareTag("ammoBox") && maxpriority < 1) {
+                maxpriority = 1;
+                found = interactingObject;
+            }
+            else if (interactingObject.CompareTag("bazooka") && maxpriority < 2) {
                 maxpriority = 2;
                 found = interactingObject;
             } else if (interactingObject.CompareTag("torchlight") && maxpriority < 3) {
@@ -145,9 +159,26 @@ public class PlayerShooting : MonoBehaviour {
 
     private void removeObjectFromInteractingObjects(GameObject gameObject) {
         interactingObjects.Remove(gameObject);
-        if (interactingObjects.Count < 1 && currentHelper != 0) {
-            helperDisplay.text = "";
+        if (interactingObjects.Count < 1) {
+            game.helperDisplay.text = "";
             currentHelper = 0;
+        }
+        else {
+            GameObject nextObject = findInteractingObject(interactingObjects);
+            if (nextObject.CompareTag("torchlight") && currentHelper < 3) {
+                game.displayText("torch");
+                currentHelper = 3;
+            } else if (nextObject.CompareTag("bazooka") && currentHelper < 2) {
+                game.displayText("bazooka");
+                currentHelper = 2;
+            } else if (nextObject.CompareTag("bazooka") && currentHelper < 1) {
+                game.displayText("ammo");
+                currentHelper = 1;
+            }
+            else {
+                game.helperDisplay.text = "";
+                currentHelper = 0;
+            }
         }
     }
 }

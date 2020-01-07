@@ -57,6 +57,8 @@ public class Game : MonoBehaviour {
     public float globalSpeedMult = 1;
     public float globalPlayerSpeedMult = 1;
 
+    public Text helperDisplay;
+
     
 
     void Awake() {
@@ -91,6 +93,8 @@ public class Game : MonoBehaviour {
         slowMotionOverlay.SetActive(false);
         specialEnabled = true;
         special = maxSpecial;
+
+        helperDisplay = GameObject.Find("HelperDisplay").GetComponent<Text>();
         
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
@@ -237,5 +241,25 @@ public class Game : MonoBehaviour {
     public void enableLighting() {
         RenderSettings.ambientMode = AmbientMode.Skybox;
         RenderSettings.reflectionIntensity = 0.5f;
+    }
+    
+    private const String torchText = "Press <color=orange><b>F</b></color> to pick up the flashlight!";
+    private const String bazookaText = "Press <color=orange><b>F</b></color> to pick up the weapon!";
+    private const String ammoText = "Press <color=orange><b>F</b></color> to refill Ammo!";
+
+    public void displayText(String objectType) {
+        String output = "";
+        switch (objectType) {
+            case "torch":
+                output = torchText;
+                break;
+            case "bazooka":
+                output = bazookaText;
+                break;
+            case "ammo":
+                output = ammoText;
+                break;
+        }
+        helperDisplay.text = output;
     }
 }

@@ -228,7 +228,7 @@ public class PlayerMovement : MonoBehaviour {
         if (other.gameObject.name == "StartTrigger") {
             controller.radius = 1.3f;
             transform.localScale = new Vector3(1f,1f,1f);
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            // transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
             game.disableControlls = false;
             game.intro = false;
