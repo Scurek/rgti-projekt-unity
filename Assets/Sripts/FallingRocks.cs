@@ -160,9 +160,9 @@ public class FallingRocks : MonoBehaviour {
         foreach (var rockBody in rockBodies) {
             rockBody.constraints = RigidbodyConstraints.FreezeAll;
         }
-        foreach (var rockPotCol in rockPotsCols) {
-            rockPotCol.enabled = false;
-        }
+        // foreach (var rockPotCol in rockPotsCols) {
+        //     rockPotCol.enabled = false;
+        // }
         wall.enabled = true;
         playerController.enabled = true;
         Game.SharedInstance.disableControlls = false;

@@ -13,10 +13,10 @@ public class PlayerMovement : MonoBehaviour {
     public float upor = 0.01f;
     public float uporOnGround = 0.4f;
 
-    public float fallingDMGTreshold = 0.0f;
+    public float fallingDMGTreshold = 7.0f;
 
     //public bool m_SlideOnTaggedObjects = false;
-    public float maxSlideSpeed = 8.0f;
+    public float maxSlideSpeed = 6.0f;
     public float m_AntiBumpFactor = 0.75f;
     public int jumpCooldown = 10;
 
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour {
                 moveDirection = new Vector3(hitNormal.x, -hitNormal.y, hitNormal.z);
                 Vector3.OrthoNormalize(ref hitNormal, ref moveDirection);
                 moveDirection *= maxSlideSpeed;
-                canMove = false;
+                // canMove = false;
             }
             else {
                 if (Game.SharedInstance.disableControlls)
@@ -145,6 +145,7 @@ public class PlayerMovement : MonoBehaviour {
 
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
+        Debug.Log(hit.collider.gameObject.name);
         lastContactPoint = hit.point;
         if (falling && Vector3.Angle(hit.normal, Vector3.up) > 90) {
             moveDirection.y = 0;
@@ -221,5 +222,21 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         return hitrost * (1f - upor);
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.name == "StartTrigger") {
+            controller.radius = 1.3f;
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            // transform.Rotate(-25f, 0f, 0f);
+            Game.SharedInstance.disableControlls = false;
+            Game.SharedInstance.intro = false;
+            RenderSettings.reflectionIntensity = 0.1f;
+            Destroy(GameObject.Find("FallingTorch"));
+            Destroy(other.gameObject);
+        } else if (other.gameObject.name == "LightingDisable") {
+            Destroy(other.gameObject);
+            Game.SharedInstance.disableLighting();
+        }
     }
 }
