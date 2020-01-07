@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class Game : MonoBehaviour {
     public static Game SharedInstance;
@@ -29,9 +31,15 @@ public class Game : MonoBehaviour {
     public bool shootingHUDEnabled;
     
     public int currentCheckpoint = 0;
+    
     public Vector3 spawnPosition = new Vector3(-81.9f, 25.8f, 49.7f);
 
     public bool disableControlls;
+
+    private GameObject timerContainer;
+    private Text timer;
+    public bool stopWatchEnabled;
+    Stopwatch stopWatch;
     
     void Awake() {
         SharedInstance = this;
@@ -46,6 +54,10 @@ public class Game : MonoBehaviour {
         ammocounterContainer = ammocounter.transform.parent.gameObject;
         ammocounterContainer.SetActive(false);
         
+        timer = GameObject.Find("Timer").GetComponent<Text>();
+        timerContainer = GameObject.Find("TimerBackground");
+        timerContainer.SetActive(false);
+
         crosshair = GameObject.Find("Crosshair");
         crosshair.SetActive(false);
         
@@ -56,6 +68,20 @@ public class Game : MonoBehaviour {
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
         }
+    }
+
+    private void Update() {
+        if (stopWatchEnabled) {
+            TimeSpan ts = stopWatch.Elapsed;
+            timer.text = $"{ts.Minutes:00}:{ts.Seconds:00}";
+        }
+    }
+    
+    public void startStopwatch() {
+        stopWatch = new Stopwatch();
+        timerContainer.SetActive(true);
+        stopWatchEnabled = true;
+        stopWatch.Start();
     }
 
     public void enableHealth() {

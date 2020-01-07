@@ -9,6 +9,7 @@ public class FallingRocks : MonoBehaviour {
     private GameObject moveTarget;
     private GameObject moveTarget2;
     private BoxCollider wall;
+    private List<BoxCollider> rockPotsCols;
 
     private GameObject player;
 
@@ -30,6 +31,9 @@ public class FallingRocks : MonoBehaviour {
     public bool done;
 
     public float timer = 3f;
+
+    private AudioSource preSound;
+    private AudioSource caveIn;
     // Start is called before the first frame update
     void Start() {
         rocks = GameObject.FindGameObjectsWithTag("fallingRock");
@@ -43,6 +47,15 @@ public class FallingRocks : MonoBehaviour {
         wall = GameObject.Find("Wall").GetComponent<BoxCollider>();
         Debug.Log(wall);
         wall.enabled = false;
+        GameObject[] rockPots = GameObject.FindGameObjectsWithTag("rockPot");
+        rockPotsCols = new List<BoxCollider>();
+        foreach (var rockPot in rockPots) {
+            BoxCollider col = rockPot.GetComponent<BoxCollider>();
+            col.enabled = false;
+            rockPotsCols.Add(col);
+        }
+        preSound = GetComponents<AudioSource>()[0];
+        caveIn = GetComponents<AudioSource>()[1];
     }
     
     // Update is called once per frame
@@ -78,6 +91,7 @@ public class FallingRocks : MonoBehaviour {
             playerController = player.GetComponent<CharacterController>();
             playerTransform = player.transform;
             playerMovement = player.GetComponent<PlayerMovement>();
+            preSound.Play();
             rockCollapseEvent();
         }
     }
@@ -131,6 +145,10 @@ public class FallingRocks : MonoBehaviour {
     
     private void RocksFall() {
         step = 4;
+        foreach (var rockPotCol in rockPotsCols) {
+            rockPotCol.enabled = true;
+        }
+        caveIn.Play();
         foreach (var rockBody in rockBodies) {
             rockBody.constraints = RigidbodyConstraints.None;
         }
@@ -142,9 +160,12 @@ public class FallingRocks : MonoBehaviour {
         foreach (var rockBody in rockBodies) {
             rockBody.constraints = RigidbodyConstraints.FreezeAll;
         }
-
-        wall.enabled = true;    
+        foreach (var rockPotCol in rockPotsCols) {
+            rockPotCol.enabled = false;
+        }
+        wall.enabled = true;
         playerController.enabled = true;
         Game.SharedInstance.disableControlls = false;
+        Game.SharedInstance.startStopwatch();
     }
 }
