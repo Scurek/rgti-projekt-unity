@@ -26,8 +26,7 @@ public class arrowTrap : MonoBehaviour {
         moveTarget = GameObject.Find("ArrowContainer");
         arrow = GameObject.Find("Arrow");
         arrowController = arrow.GetComponent<arrow>();
-        arrowController.trap = this;
-        arrow.SetActive(false);
+        // arrow.SetActive(false);
     }
 
     // Update is called once per frame
@@ -37,6 +36,12 @@ public class arrowTrap : MonoBehaviour {
         if (step == 1) {
             rotateTowardTarget(moveTarget.transform);
         } else if (step == 2) {
+            if (!arrow) {
+                step = 3;
+                done = true;
+                Game.SharedInstance.disableControlls = false;
+                playerController.enabled = true;
+            }
             float distance = Vector3.Magnitude(player.transform.position - arrow.transform.position);
             Debug.Log(distance);
             if (distance < 5f) {
@@ -72,7 +77,9 @@ public class arrowTrap : MonoBehaviour {
     private void fireTrap() {
         arrowController.moving = true;
         arrowController.direction = Vector3.Normalize(player.transform.position - arrow.transform.position);
-        arrow.transform.rotation = Quaternion.Euler(arrowController.direction.x, arrowController.direction.y + 90f, arrowController.direction.z);
+        // arrow.transform.rotation = Quaternion.Euler(arrowController.direction.x, arrowController.direction.y + 180f, arrowController.direction.z);
+        arrow.transform.rotation = Quaternion.LookRotation(arrowController.direction, Vector3.up);
+        arrow.transform.Rotate(0, 90f, 0);
         arrow.SetActive(true);
     }
 
