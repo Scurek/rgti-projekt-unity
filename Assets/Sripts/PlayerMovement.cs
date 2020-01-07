@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour {
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 6.0f;
     public float m_AntiBumpFactor = 0.75f;
-    public int jumpCooldown = 10;
+    public float jumpCooldown = 1f;
 
     public Vector3 moveDirection = Vector3.zero;
     public Vector3 explosionMoveVelocity = Vector3.zero;
@@ -31,7 +31,8 @@ public class PlayerMovement : MonoBehaviour {
     private float distanceFromCenter;
     private Vector3 lastContactPoint;
     private bool canMove;
-    private int remJumpCooldown;
+    public float remJumpCooldown;
+    private Game game;
 
 
 
@@ -42,6 +43,7 @@ public class PlayerMovement : MonoBehaviour {
         // Tole je baje razdalja od sredine controllerja do "nog"
         distanceFromCenter = controller.height * 0.5f + controller.radius;
         remJumpCooldown = jumpCooldown;
+        game = Game.SharedInstance;
     }
 
 
@@ -89,7 +91,7 @@ public class PlayerMovement : MonoBehaviour {
                 // canMove = false;
             }
             else {
-                if (Game.SharedInstance.disableControlls)
+                if (game.disableControlls)
                     moveDirection = new Vector3();
                 else
                     moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -103,13 +105,11 @@ public class PlayerMovement : MonoBehaviour {
                 canMove = true;
             }
 
-            if (!Input.GetButtonDown("Jump") || Game.SharedInstance.disableControlls) {
-                if (remJumpCooldown > 0)
-                    remJumpCooldown--;
-            }
-            else if (remJumpCooldown <= 0) {
+            if (Input.GetButtonDown("Jump") && remJumpCooldown <= 0 && !game.disableControlls) {
                 moveDirection.y = jumpSpeed;
                 remJumpCooldown = jumpCooldown;
+            } else if (remJumpCooldown > 0) {
+                remJumpCooldown -= Time.deltaTime * game.globalPlayerSpeedMult;
             }
         }
         else {
@@ -132,7 +132,7 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         moveDirection.y -= gravity * Time.deltaTime;
-        controller.Move((moveDirection + explosionMoveVelocity) * Time.deltaTime);
+        controller.Move((moveDirection + explosionMoveVelocity) * (Time.deltaTime * game.globalPlayerSpeedMult));
         //https://docs.unity3d.com/ScriptReference/CharacterController-collisionFlags.html
         isGrounded = (controller.collisionFlags & CollisionFlags.Below) != 0;
         if (controller.collisionFlags == CollisionFlags.Above) {
@@ -158,7 +158,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnFell(float fallDistance) {
         // print("Ouch! Fell " + fallDistance + " units!");
-        Game.SharedInstance.damage(fallDistance);
+        game.damage(fallDistance);
     }
 
     public void explosionPush(Vector3 explosionPosition) {
@@ -227,16 +227,17 @@ public class PlayerMovement : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.name == "StartTrigger") {
             controller.radius = 1.3f;
+            transform.localScale = new Vector3(1f,1f,1f);
             transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
-            Game.SharedInstance.disableControlls = false;
-            Game.SharedInstance.intro = false;
+            game.disableControlls = false;
+            game.intro = false;
             RenderSettings.reflectionIntensity = 0.1f;
             Destroy(GameObject.Find("FallingTorch"));
             Destroy(other.gameObject);
         } else if (other.gameObject.name == "LightingDisable") {
             Destroy(other.gameObject);
-            Game.SharedInstance.disableLighting();
+            game.disableLighting();
         }
     }
 }
