@@ -145,7 +145,6 @@ public class PlayerMovement : MonoBehaviour {
 
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        Debug.Log(hit.collider.gameObject.name);
         lastContactPoint = hit.point;
         if (falling && Vector3.Angle(hit.normal, Vector3.up) > 90) {
             moveDirection.y = 0;

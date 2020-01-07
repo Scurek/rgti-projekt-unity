@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ public class PlayerShooting : MonoBehaviour {
     private int currentHelper; //1-Bazooka, 2-TorchLight
     public Text helperDisplay;
     
+    
+    
     void Start() {
         //kamera = GameObject.FindWithTag("MainCamera");
         kamera = Camera.main;
@@ -26,6 +29,11 @@ public class PlayerShooting : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (Input.GetKeyDown("r")) {
+            if (!Game.SharedInstance.slowMotionEnabled) {
+                Time.timeScale = 0.1f;
+            }
+        }
         if (Input.GetButtonDown("Fire1") && bazookaExit && Game.SharedInstance.ammo > 0) {
             Rocket rocket = Game.SharedInstance.GetRocketFromPool();
             if (rocket) {

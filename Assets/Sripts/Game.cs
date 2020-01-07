@@ -43,6 +43,8 @@ public class Game : MonoBehaviour {
     public bool stopWatchEnabled;
     Stopwatch stopWatch;
     public bool intro = true;
+    
+    public bool slowMotionEnabled;
 
     void Awake() {
         SharedInstance = this;
