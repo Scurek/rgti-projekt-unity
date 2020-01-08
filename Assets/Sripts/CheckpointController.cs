@@ -6,6 +6,7 @@ public class CheckpointController : MonoBehaviour {
 
     public int checkpointNumber = 1;
     public bool isLast;
+    public bool disableSound;
     public Vector3 spawnDiff = new Vector3(1, 0, 1);
 
     private GameObject parent;
@@ -32,8 +33,12 @@ public class CheckpointController : MonoBehaviour {
             Game.SharedInstance.currentCheckpoint = checkpointNumber;
             Game.SharedInstance.spawnPosition = transform.position + spawnDiff;
             zastava.SetActive(true);
-            InteractionSound.Play();
+            Game.SharedInstance.showCheckpointDisplay();
+            if (!disableSound)
+                InteractionSound.Play();
         }
         // Debug.Log(other.gameObject.tag);
     }
+    
+    
 }

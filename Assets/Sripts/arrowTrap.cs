@@ -8,10 +8,10 @@ public class arrowTrap : MonoBehaviour {
 
     private CharacterController playerController;
     private Transform playerTransform;
-    private PlayerMovement playerMovement;
     private GameObject moveTarget;
     private GameObject arrow;
     private arrow arrowController;
+    private AudioSource XBowShootSound;
 
     public bool started;
     public bool done;
@@ -26,6 +26,7 @@ public class arrowTrap : MonoBehaviour {
         moveTarget = GameObject.Find("ArrowContainer");
         arrow = GameObject.Find("Arrow");
         arrowController = arrow.GetComponent<arrow>();
+        XBowShootSound = GameObject.Find("Crossbow").GetComponent<AudioSource>();
         // arrow.SetActive(false);
     }
 
@@ -34,7 +35,11 @@ public class arrowTrap : MonoBehaviour {
         if (done)
             return;
         if (step == 1) {
-            rotateTowardTarget(moveTarget.transform);
+            if (Game.SharedInstance.rotateTowardTarget(moveTarget.transform, playerTransform, startTime, journeyTime)) {
+                step = 2;
+                fireTrap();
+            }
+            // rotateTowardTarget(moveTarget.transform);
         } else if (step == 2) {
             if (!arrow) {
                 step = 3;
@@ -51,23 +56,24 @@ public class arrowTrap : MonoBehaviour {
         }
     }
 
-    private void rotateTowardTarget(Transform targetTransform) {
-        Vector3 targetLookAtPoint = targetTransform.position - playerTransform.position;
-        targetLookAtPoint = new Vector3(targetLookAtPoint.x, playerTransform.position.y, targetLookAtPoint.z);
-        targetLookAtPoint.Normalize();
-        float fracComplete = (Time.time - startTime) / journeyTime;
-        targetLookAtPoint = Vector3.Slerp(playerTransform.forward, targetLookAtPoint,
-            fracComplete);
-        targetLookAtPoint += playerTransform.position;
-        targetLookAtPoint.y = playerTransform.position.y;
-        player.transform.LookAt(targetLookAtPoint);
-        if (fracComplete >= 1) {
-            step = 2;
-            fireTrap();
-        }
-    }
+    // private void rotateTowardTarget(Transform targetTransform) {
+    //     Vector3 targetLookAtPoint = targetTransform.position - playerTransform.position;
+    //     targetLookAtPoint = new Vector3(targetLookAtPoint.x, playerTransform.position.y, targetLookAtPoint.z);
+    //     targetLookAtPoint.Normalize();
+    //     float fracComplete = (Time.time - startTime) / journeyTime;
+    //     targetLookAtPoint = Vector3.Slerp(playerTransform.forward, targetLookAtPoint,
+    //         fracComplete);
+    //     targetLookAtPoint += playerTransform.position;
+    //     targetLookAtPoint.y = playerTransform.position.y;
+    //     player.transform.LookAt(targetLookAtPoint);
+    //     if (fracComplete >= 1) {
+    //         step = 2;
+    //         fireTrap();
+    //     }
+    // }
 
     private void activateSlowMo() {
+        Game.SharedInstance.enableSpecial();
         Game.SharedInstance.setGlobalSpeed();
         Game.SharedInstance.disableControlls = false;
         playerController.enabled = true;
@@ -80,6 +86,7 @@ public class arrowTrap : MonoBehaviour {
         // arrow.transform.rotation = Quaternion.Euler(arrowController.direction.x, arrowController.direction.y + 180f, arrowController.direction.z);
         arrow.transform.rotation = Quaternion.LookRotation(arrowController.direction, Vector3.up);
         arrow.transform.Rotate(0, 90f, 0);
+        XBowShootSound.Play();
         arrow.SetActive(true);
     }
 
@@ -92,7 +99,6 @@ public class arrowTrap : MonoBehaviour {
             player = other.gameObject;
             playerController = player.GetComponent<CharacterController>();
             playerTransform = player.transform;
-            playerMovement = player.GetComponent<PlayerMovement>();
             startTime = Time.time;
             playerController.enabled = false;
             step = 1;

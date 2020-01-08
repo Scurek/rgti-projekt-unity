@@ -34,8 +34,11 @@ public class FallingRocks : MonoBehaviour {
 
     private AudioSource preSound;
     private AudioSource caveIn;
+
+    private Game game;
     // Start is called before the first frame update
     void Start() {
+        game = Game.SharedInstance;
         rocks = GameObject.FindGameObjectsWithTag("fallingRock");
         foreach (var rock in rocks) {
             rockBodies.Add(rock.GetComponent<Rigidbody>());
@@ -62,7 +65,9 @@ public class FallingRocks : MonoBehaviour {
         if (done)
             return;
         if (step == 1) {
-            rotateTowardTarget(moveTargetTransform);
+            if (game.rotateTowardTarget(moveTargetTransform, playerTransform, startTime, journeyTime)) {
+                moveTowardTarget();
+            }
         }
         else if (step == 2) {
             if (arrived) {
@@ -71,7 +76,9 @@ public class FallingRocks : MonoBehaviour {
             }
             playerController.Move(direction * (playerMovement.maxSpeedSprint * Time.deltaTime));
         } else if (step == 3) {
-            rotateTowardTarget(moveTarget2Transform);
+            if (game.rotateTowardTarget(moveTarget2Transform, playerTransform, startTime, journeyTime)) {
+                RocksFall();
+            }
         } else if (step == 4) {
             timer -= Time.deltaTime;
             if (timer <= 0) {
@@ -85,7 +92,7 @@ public class FallingRocks : MonoBehaviour {
             return;
         if (other.gameObject.CompareTag("player")) {
             started = true;
-            Game.SharedInstance.disableControlls = true;
+            game.disableControlls = true;
             player = other.gameObject;
             playerController = player.GetComponent<CharacterController>();
             playerTransform = player.transform;
@@ -115,24 +122,24 @@ public class FallingRocks : MonoBehaviour {
     
     // hvala forumom na https://forum.unity.com/threads/slowly-turning-towards-target.49919/
     // in pa https://docs.unity3d.com/ScriptReference/Vector3.Slerp.html
-    private void rotateTowardTarget(Transform targetTransform) {
-        Vector3 targetLookAtPoint = targetTransform.position - playerTransform.position;
-        targetLookAtPoint = new Vector3(targetLookAtPoint.x, playerTransform.position.y, targetLookAtPoint.z);
-        targetLookAtPoint.Normalize();
-        float fracComplete = (Time.time - startTime) / journeyTime;
-        targetLookAtPoint = Vector3.Slerp(playerTransform.forward, targetLookAtPoint,
-            fracComplete);
-        targetLookAtPoint += playerTransform.position;
-        targetLookAtPoint.y = playerTransform.position.y;
-        player.transform.LookAt(targetLookAtPoint);
-        if (fracComplete >= 1) {
-            if (step == 1) {
-                moveTowardTarget();
-            } else if (step == 3) {
-                RocksFall();
-            }
-        }
-    }
+    // private void rotateTowardTarget(Transform targetTransform) {
+    //     Vector3 targetLookAtPoint = targetTransform.position - playerTransform.position;
+    //     targetLookAtPoint = new Vector3(targetLookAtPoint.x, playerTransform.position.y, targetLookAtPoint.z);
+    //     targetLookAtPoint.Normalize();
+    //     float fracComplete = (Time.time - startTime) / journeyTime;
+    //     targetLookAtPoint = Vector3.Slerp(playerTransform.forward, targetLookAtPoint,
+    //         fracComplete);
+    //     targetLookAtPoint += playerTransform.position;
+    //     targetLookAtPoint.y = playerTransform.position.y;
+    //     player.transform.LookAt(targetLookAtPoint);
+    //     if (fracComplete >= 1) {
+    //         if (step == 1) {
+    //             moveTowardTarget();
+    //         } else if (step == 3) {
+    //             RocksFall();
+    //         }
+    //     }
+    // }
     
     private void moveTowardTarget() {
         step = 2;
@@ -164,7 +171,7 @@ public class FallingRocks : MonoBehaviour {
         // }
         wall.enabled = true;
         playerController.enabled = true;
-        Game.SharedInstance.disableControlls = false;
-        Game.SharedInstance.startStopwatch();
+        game.disableControlls = false;
+        game.startStopwatch();
     }
 }

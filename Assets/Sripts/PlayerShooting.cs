@@ -15,7 +15,7 @@ public class PlayerShooting : MonoBehaviour {
     private PlayerMovement playerMovement;
     private AudioSource rocketFireSound;
     private Animator bazookaAnimator;
-    
+
     private int currentHelper; //1-Bazooka, 2-TorchLight
 
     public float crFireCooldown = 0f;
@@ -27,13 +27,13 @@ public class PlayerShooting : MonoBehaviour {
         //kamera = GameObject.FindWithTag("MainCamera");
         kamera = Camera.main;
         playerMovement = GetComponent<PlayerMovement>();
-        rocketFireSound = GetComponent<AudioSource>();
+        rocketFireSound = GetComponents<AudioSource>()[2];
         game = Game.SharedInstance;
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown("r")) {
+        if (Input.GetKeyDown("r") && game.specialEnabled) {
             if (!game.slowMotionEnabled) {
                 game.setGlobalSpeed();
             }
@@ -55,7 +55,7 @@ public class PlayerShooting : MonoBehaviour {
                     targetPoint = ray.GetPoint(1000);
                 // targetPoint += Vector3.down*2;
                 //Debug.Log(targetPoint);
-                // Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
+                Debug.DrawLine(kamera.transform.position, targetPoint, Color.green, 5);
                 rocketFireSound.Stop();
                 rocketFireSound.Play();
                 bazookaAnimator.SetBool(HasAmmo, game.hasAmmo());
@@ -78,7 +78,7 @@ public class PlayerShooting : MonoBehaviour {
                 interactingObject.transform.localScale = new Vector3(2, 2, 2);
                 game.enableHealth();
                 game.enableLighting();
-            } else if (interactingObject.CompareTag("bazooka")) {
+            } else if (interactingObject.CompareTag("bazooka") && !bazooka) {
                 // Debug.Log("Pobiram");
                 Destroy(interactingObject.GetComponent<BoxCollider>());
                 removeObjectFromInteractingObjects(interactingObject);
@@ -90,7 +90,12 @@ public class PlayerShooting : MonoBehaviour {
                 bazookaExit = bazooka.transform.Find("ExitPoint").gameObject;
                 game.enableAmmo();
                 bazookaAnimator = bazooka.GetComponent<Animator>();
+                game.enableSpecial();
                 game.bazookaAnimator = bazookaAnimator;
+                GameObject bazookaLight = bazooka.transform.Find("bazookaLight").gameObject;
+                bazookaLight.GetComponent<Light>().enabled = true;
+                bazookaLight.transform.parent = kamera.transform;
+                bazookaLight.transform.rotation = Quaternion.Euler(new Vector3(bazookaLight.transform.rotation.x, 112.816f, bazookaLight.transform.rotation.z)); //112.816
             } else if (interactingObject.CompareTag("ammoBox")) {
                 AudioSource ammoClip =  interactingObject.GetComponent<AudioSource>();
                 if (ammoClip)

@@ -35,6 +35,9 @@ public class PlayerMovement : MonoBehaviour {
     private Game game;
     public bool sliding;
 
+    private AudioSource fallSound;
+    private AudioSource nononoSound;
+
 
 
     private void Start() {
@@ -45,6 +48,8 @@ public class PlayerMovement : MonoBehaviour {
         distanceFromCenter = controller.height * 0.5f + controller.radius;
         remJumpCooldown = jumpCooldown;
         game = Game.SharedInstance;
+        fallSound = GetComponents<AudioSource>()[0];
+        nononoSound = GetComponents<AudioSource>()[3];
     }
 
 
@@ -95,7 +100,7 @@ public class PlayerMovement : MonoBehaviour {
                 // canMove = false;
             }
             else {
-                if (game.disableControlls)
+                if (movementDisabled())
                     moveDirection = new Vector3();
                 else
                     moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -109,7 +114,7 @@ public class PlayerMovement : MonoBehaviour {
                 canMove = true;
             }
 
-            if (Input.GetButtonDown("Jump") && remJumpCooldown <= 0 && !game.disableControlls) {
+            if (Input.GetButtonDown("Jump") && remJumpCooldown <= 0 && !movementDisabled()) {
                 moveDirection.y = jumpSpeed;
                 remJumpCooldown = jumpCooldown;
             }
@@ -143,13 +148,17 @@ public class PlayerMovement : MonoBehaviour {
         explosionMoveVelocity.z = dodajUpor(explosionMoveVelocity.z, isGrounded);
     }
 
+    private bool movementDisabled() {
+        return game.disabledMovement || game.disableControlls;
+    }
+
 
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        lastContactPoint = hit.point;
+        if ((controller.collisionFlags & CollisionFlags.Below) != 0)
+            lastContactPoint = hit.point;
         if (falling && Vector3.Angle(hit.normal, Vector3.up) > 95) {
             moveDirection.y = 0;
-            Debug.Log( Vector3.Angle(hit.normal, Vector3.up));
         }
 
         // if (falling && moveDirection.y > 0) {
@@ -177,6 +186,11 @@ public class PlayerMovement : MonoBehaviour {
         else {
             moveDirection.y += explosionPlayer.y;
         }
+    }
+
+    public void spikeJump() {
+        if (moveDirection.y < game.SpikeJump)
+            moveDirection.y = game.SpikeJump;
     }
 
     public float powerScalar(float distance) {
@@ -227,18 +241,28 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.name == "StartTrigger") {
+            fallSound.Play();
+            game.startFloorHit();
             controller.radius = 1.3f;
+            game.disableControlls = true;
             transform.localScale = new Vector3(1f,1f,1f);
+            transform.rotation = Quaternion.Euler(0f, -29f, 0f);
+            game.mouseLook.xRotation = 0f;
             // transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
-            game.disableControlls = false;
             game.intro = false;
             RenderSettings.reflectionIntensity = 0.1f;
             Destroy(GameObject.Find("FallingTorch"));
             Destroy(other.gameObject);
-        } else if (other.gameObject.name == "LightingDisable") {
-            Destroy(other.gameObject);
-            game.disableLighting();
+        } else if (other.gameObject.name == "nononoTrigger") {
+            nononoSound.Play();
+            
         }
+        // else if (other.gameObject.name == "LightingDisable") {
+        //     Destroy(other.gameObject);
+        //     game.disableLighting();
+        // } 
     }
+    
+    
 }

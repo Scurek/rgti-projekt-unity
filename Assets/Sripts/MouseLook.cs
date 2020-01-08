@@ -5,7 +5,7 @@ using UnityEngine;
 public class MouseLook : MonoBehaviour {
     public float mouseSensitivity = 50f;
     public Transform playerBody;
-    float xRotation = 0f;
+    public float xRotation = 48.3f;
 
     private CharacterController playerController;
 
@@ -13,10 +13,11 @@ public class MouseLook : MonoBehaviour {
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         playerController = GameObject.FindWithTag("player").GetComponent<CharacterController>();
+        xRotation = 48.3f;
     }
 
     // Update is called once per frame
-    void Update() {
+    void FixedUpdate() {
         if (!playerController.enabled || Game.SharedInstance.disableControlls)
             return;
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime * Game.SharedInstance.globalPlayerSpeedMult;
