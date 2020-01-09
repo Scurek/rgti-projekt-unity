@@ -23,6 +23,9 @@ public class Game : MonoBehaviour {
     public GameObject rocket;
     private static List<Rocket> rocketPool;
     public int rocketPoolSize = 2;
+    
+    // public GameObject explosion;
+    // private List<ParticleSystem>
 
     public bool healthEnabled;
     private GameObject healthbarContainer;
@@ -135,6 +138,8 @@ public class Game : MonoBehaviour {
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
         }
+        
+        
     }
 
     private void Update() {
