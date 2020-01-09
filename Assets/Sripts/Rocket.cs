@@ -12,14 +12,25 @@ public class Rocket : MonoBehaviour
     private Vector3 direction;
     private bool visible;
     private AudioSource explosionSound;
+    private ParticleSystem explosion;
+    private Light rocketLight;
+    private ParticleSystem flame;
+    private MeshRenderer rocket;
     
     void Start() {
         gameObject.SetActive(false);
         explosionSound = GetComponent<AudioSource>();
+        rocket = GetComponent<MeshRenderer>();
+        explosion = transform.Find("TinyExplosion").GetComponent<ParticleSystem>();
+        rocketLight = transform.Find("Point Light").GetComponent<Light>();
+        flame = transform.Find("RocketFlame").GetComponent<ParticleSystem>();
     }
     
     public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
         // this.transform.rotation = transform.rotation;
+        flame.Play();
+        rocketLight.enabled = true;
+        rocket.enabled = true;
         direction = Vector3.Normalize(targetPoint - transform.position);
         this.transform.position = transform.position;
         this.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -34,16 +45,27 @@ public class Rocket : MonoBehaviour
         if (visible) {
             CancelInvoke();
             visible = false;
+            flame.Stop();
+            // rocketLight.enabled = false;
+            rocket.enabled = false;
             Explode();
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
             ExplodeGFX();
+            StartCoroutine(SetInactiveAfterTime(2f));
         }
+    }
+    
+    IEnumerator SetInactiveAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void FixedUpdate() {
         // transform.Translate( Time.deltaTime * direction);
-        transform.position += direction * (velocity * Game.SharedInstance.globalSpeedMult);
+        if (visible)
+            transform.position += direction * (velocity * Game.SharedInstance.globalSpeedMult);
     }
     
     void Explode() {
@@ -56,7 +78,25 @@ public class Rocket : MonoBehaviour
     
 
     void ExplodeGFX() {
+        explosion.Play();
+        StartCoroutine(explosionLightEffect(0.05f, 0.75f));
+    }
         
+    private IEnumerator explosionLightEffect(float time1, float time2) {
+        while (rocketLight.intensity < 30.0f) {
+            rocketLight.intensity += (Time.deltaTime / time1) * 15;
+            rocketLight.range += (Time.deltaTime / time1) * 15;
+            yield return null;
+        }
+        // yield return new WaitForSeconds(1);
+        while (rocketLight.intensity > 0.0f) {
+            rocketLight.intensity -= (Time.deltaTime / time2) * 30;
+            rocketLight.range -= (Time.deltaTime / time2) * 15;
+            yield return null;
+        }
+        rocketLight.enabled = false;
+        rocketLight.intensity = 15f;
+        rocketLight.range = 15f;
     }
 
 

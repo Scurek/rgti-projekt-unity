@@ -23,6 +23,9 @@ public class Game : MonoBehaviour {
     public GameObject rocket;
     private static List<Rocket> rocketPool;
     public int rocketPoolSize = 2;
+    
+    // public GameObject explosion;
+    // private List<ParticleSystem>
 
     public bool healthEnabled;
     private GameObject healthbarContainer;
@@ -74,11 +77,17 @@ public class Game : MonoBehaviour {
 
     private Text checkpointDisplay;
 
+    private GameObject PauseMenu;
+
     void Awake() {
         SharedInstance = this;
     }
 
     private void Start() {
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
         healthbar = GameObject.FindGameObjectWithTag("healthbar");
         healthbarContainer = healthbar.transform.parent.gameObject;
         healthbarContainer.SetActive(false);
@@ -122,13 +131,26 @@ public class Game : MonoBehaviour {
         checkpointDisplay = GameObject.Find("CheckpointDisplay").GetComponent<Text>();
         checkpointDisplay.enabled = false;
 
+        PauseMenu = GameObject.Find("PauseMenu");
+        PauseMenu.SetActive(false);
+
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
         }
+        
+        
     }
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (PauseMenu.activeSelf) {
+                resumeGame();
+            }
+            else {
+                pauseGame();
+            }
+        }
         if (specialEnabled) {
             if (slowMotionEnabled && special > 0) {
                 special -= Time.deltaTime;
@@ -155,6 +177,20 @@ public class Game : MonoBehaviour {
         if (intro && RenderSettings.reflectionIntensity >= 0.1f) {
             RenderSettings.reflectionIntensity *= 0.99f;
         }
+    }
+
+    public void pauseGame() {
+        Time.timeScale = 0;
+        PauseMenu.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void resumeGame() {
+        Time.timeScale = 1;
+        PauseMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void resetGlobalSpeed() {
