@@ -325,7 +325,7 @@ public class Game : MonoBehaviour {
 
     public void enableLighting() {
         //RenderSettings.ambientMode = AmbientMode.Skybox;
-        RenderSettings.reflectionIntensity = 0.5f;
+        // RenderSettings.reflectionIntensity = 0.5f;
     }
 
     private const String torchText = "Press <color=orange><b>F</b></color> to pick up the flashlight!";

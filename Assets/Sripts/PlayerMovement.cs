@@ -194,7 +194,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float powerScalar(float distance) {
-        int maxPower = 32;
+        int maxPower = 16;
         float power = 0;
         if (distance > 20) {
             return 0;
