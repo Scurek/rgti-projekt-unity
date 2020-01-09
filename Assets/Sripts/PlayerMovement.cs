@@ -248,6 +248,7 @@ public class PlayerMovement : MonoBehaviour {
             transform.localScale = new Vector3(1f,1f,1f);
             transform.rotation = Quaternion.Euler(0f, -29f, 0f);
             game.mouseLook.xRotation = 0f;
+            game.mouseLook.gameObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
             game.intro = false;
