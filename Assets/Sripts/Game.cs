@@ -340,6 +340,7 @@ public class Game : MonoBehaviour {
     }
 
     public void restartFromLastCheckpoint() {
+        destroyAllRockets();
         DeathScreenContainer.enabled = false;
         DeathScreenText.enabled = false;
         DeathScreenRestartText.enabled = false;

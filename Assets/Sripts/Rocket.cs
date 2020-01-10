@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Rocket : MonoBehaviour
-{
+public class Rocket : MonoBehaviour {
     // Start is called before the first frame update
     public float velocity = 2;
     private PlayerMovement playerMovement;
@@ -16,7 +15,7 @@ public class Rocket : MonoBehaviour
     private Light rocketLight;
     private ParticleSystem flame;
     private MeshRenderer rocket;
-    
+
     void Start() {
         gameObject.SetActive(false);
         explosionSound = GetComponent<AudioSource>();
@@ -25,7 +24,7 @@ public class Rocket : MonoBehaviour
         rocketLight = transform.Find("Point Light").GetComponent<Light>();
         flame = transform.Find("RocketFlame").GetComponent<ParticleSystem>();
     }
-    
+
     public void InitRocket(Transform transform, Vector3 targetPoint, PlayerMovement playerMovement) {
         // this.transform.rotation = transform.rotation;
         flame.Play();
@@ -38,7 +37,7 @@ public class Rocket : MonoBehaviour
         this.playerMovement = playerMovement;
         visible = true;
         gameObject.SetActive(true);
-        Invoke("DestroyRocket", 2.0f);
+        Invoke("DestroyRocket", 2f);
     }
 
     public void DestroyRocket() {
@@ -51,12 +50,12 @@ public class Rocket : MonoBehaviour
             Explode();
             // gameObject.SetActive(false);
             ExplodeGFX();
-            StartCoroutine(SetInactiveAfterTime(2f));
+            if (isActiveAndEnabled)
+                StartCoroutine(SetInactiveAfterTime(2f));
         }
     }
-    
-    IEnumerator SetInactiveAfterTime(float time)
-    {
+
+    IEnumerator SetInactiveAfterTime(float time) {
         yield return new WaitForSeconds(time);
         gameObject.SetActive(false);
     }
@@ -67,33 +66,36 @@ public class Rocket : MonoBehaviour
         if (visible)
             transform.position += direction * (velocity * Game.SharedInstance.globalSpeedMult);
     }
-    
+
     void Explode() {
         AudioSource.PlayClipAtPoint(explosionSound.clip, transform.position);
         // explosionSound.Stop();
         // explosionSound.Play();
         playerMovement.explosionPush(this.transform.position);
     }
-    
-    
+
 
     void ExplodeGFX() {
-        explosion.Play();
-        StartCoroutine(explosionLightEffect(0.05f, 0.75f));
+        if (isActiveAndEnabled) {
+            explosion.Play();
+            StartCoroutine(explosionLightEffect(0.05f, 0.75f));
+        }
     }
-        
+
     private IEnumerator explosionLightEffect(float time1, float time2) {
         while (rocketLight.intensity < 35.0f) {
             rocketLight.intensity += (Time.deltaTime / time1) * 20;
             rocketLight.range += (Time.deltaTime / time1) * 20;
             yield return null;
         }
+
         // yield return new WaitForSeconds(1);
         while (rocketLight.intensity > 0.0f) {
             rocketLight.intensity -= (Time.deltaTime / time2) * 35;
             rocketLight.range -= (Time.deltaTime / time2) * 35;
             yield return null;
         }
+
         rocketLight.enabled = false;
         rocketLight.intensity = 15f;
         rocketLight.range = 15f;

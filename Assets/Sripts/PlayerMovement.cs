@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     public float upor = 0.01f;
     public float uporOnGround = 0.4f;
 
-    public float fallingDMGTreshold = 7.0f;
+    public float fallingDMGTreshold = 4.0f;
 
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 6.0f;
@@ -164,12 +164,12 @@ public class PlayerMovement : MonoBehaviour {
 
         // if (falling && moveDirection.y > 0) {
         //     moveDirection.y = 0;
-        // }
+        // }    
     }
 
     private void OnFell(float fallDistance) {
         // print("Ouch! Fell " + fallDistance + " units!");
-        game.damage(fallDistance);
+        game.damage((float)Math.Pow(fallDistance,2));
     }
 
     public void explosionPush(Vector3 explosionPosition) {
@@ -261,11 +261,10 @@ public class PlayerMovement : MonoBehaviour {
         } else if (other.gameObject.name == "nononoTrigger") {
             nononoSound.Play();
             
+        } else if (other.gameObject.name == "FallDeath") {
+            game.damage(100);
         }
-        // else if (other.gameObject.name == "LightingDisable") {
-        //     Destroy(other.gameObject);
-        //     game.disableLighting();
-        // } 
+            
     }
     
     

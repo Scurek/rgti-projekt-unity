@@ -8,6 +8,7 @@ public class CheckpointController : MonoBehaviour {
     public bool isLast;
     public bool disableSound;
     public Vector3 spawnDiff = new Vector3(1, 0, 1);
+    // public Vector3 spawnRot = new Vector3(0f, 0f, 0f);
 
     private GameObject parent;
     private GameObject zastava;
