@@ -150,7 +150,7 @@ public class Game : MonoBehaviour {
         DeathScreenText.enabled = false;
         DeathScreenRestartText.enabled = false;
         // DeathScreenRestartButton = DeathScreenRestart.GetComponent<Button>();
-
+        
         ArrowTrap = GameObject.Find("ArrowTrap").GetComponent<arrowTrap>();
 
         rocketPool = new List<Rocket>();
