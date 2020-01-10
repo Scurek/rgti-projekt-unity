@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     public float upor = 0.01f;
     public float uporOnGround = 0.4f;
 
-    public float fallingDMGTreshold = 4.0f;
+    public float fallingDMGTreshold = 5.0f;
 
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 6.0f;

@@ -96,7 +96,7 @@ public class Game : MonoBehaviour {
     public GameObject SuperModeTutorial;
     public bool inTutorial;
 
-    private Vector3 CheatCords = new Vector3(70f, 72f, 97f);
+    private Vector3 CheatCords = new Vector3(68.2f, 72f, 97f);
 
     void Awake() {
         SharedInstance = this;
@@ -231,6 +231,7 @@ public class Game : MonoBehaviour {
         playerController.enabled = false;
         player.transform.position = CheatCords;
         player.transform.rotation = Quaternion.Euler(0, 90f, 0);
+        mouseLook.xRotation = 0;
         playerCamera.transform.localRotation = Quaternion.Euler(0, 0, 0);
         playerController.enabled = true;
     }
@@ -409,7 +410,7 @@ public class Game : MonoBehaviour {
     public void showVictoryScreen() {
         isDead = true;
         TimeSpan ts = stopWatch.Elapsed;
-        victoryScreenTextArray[4].text = $"<i>{ts.Minutes:00}:{ts.Seconds:00}</i>";
+        victoryScreenTextArray[4].text = $"{ts.Minutes:00}:{ts.Seconds:00}";
         StartCoroutine(fadeInVictoryScreen());
     }
     

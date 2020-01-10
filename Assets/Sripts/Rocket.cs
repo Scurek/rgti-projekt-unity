@@ -16,6 +16,8 @@ public class Rocket : MonoBehaviour {
     private ParticleSystem flame;
     private MeshRenderer rocket;
 
+    public float remainingTime;
+
     void Start() {
         gameObject.SetActive(false);
         explosionSound = GetComponent<AudioSource>();
@@ -37,12 +39,13 @@ public class Rocket : MonoBehaviour {
         this.playerMovement = playerMovement;
         visible = true;
         gameObject.SetActive(true);
-        Invoke("DestroyRocket", 2f);
+        remainingTime = 2;
+        // Invoke("DestroyRocket", 2f);
     }
 
     public void DestroyRocket() {
         if (visible) {
-            CancelInvoke();
+            // CancelInvoke();
             visible = false;
             flame.Stop();
             // rocketLight.enabled = false;
@@ -63,8 +66,13 @@ public class Rocket : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate() {
         // transform.Translate( Time.deltaTime * direction);
-        if (visible)
+        if (visible) {
             transform.position += direction * (velocity * Game.SharedInstance.globalSpeedMult);
+            remainingTime -= Time.deltaTime * Game.SharedInstance.globalSpeedMult;
+            if (remainingTime <= 0) {
+                DestroyRocket();
+            }
+        }
     }
 
     void Explode() {
