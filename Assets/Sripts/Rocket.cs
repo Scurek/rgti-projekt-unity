@@ -83,15 +83,15 @@ public class Rocket : MonoBehaviour
     }
         
     private IEnumerator explosionLightEffect(float time1, float time2) {
-        while (rocketLight.intensity < 30.0f) {
-            rocketLight.intensity += (Time.deltaTime / time1) * 15;
-            rocketLight.range += (Time.deltaTime / time1) * 15;
+        while (rocketLight.intensity < 35.0f) {
+            rocketLight.intensity += (Time.deltaTime / time1) * 20;
+            rocketLight.range += (Time.deltaTime / time1) * 20;
             yield return null;
         }
         // yield return new WaitForSeconds(1);
         while (rocketLight.intensity > 0.0f) {
-            rocketLight.intensity -= (Time.deltaTime / time2) * 30;
-            rocketLight.range -= (Time.deltaTime / time2) * 15;
+            rocketLight.intensity -= (Time.deltaTime / time2) * 35;
+            rocketLight.range -= (Time.deltaTime / time2) * 35;
             yield return null;
         }
         rocketLight.enabled = false;

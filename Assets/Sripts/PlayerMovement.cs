@@ -74,6 +74,7 @@ public class PlayerMovement : MonoBehaviour {
             // Če ne najde ničesar poglej še zadnjo točko stičišča
             else {
                 Physics.Raycast(lastContactPoint + Vector3.up, -Vector3.up, out hit);
+                Debug.DrawLine(lastContactPoint + Vector3.up, -Vector3.up, Color.green);
                 if (Vector3.Angle(hit.normal, Vector3.up) > controller.slopeLimit) {
                     sliding = true;
                 }
@@ -140,7 +141,7 @@ public class PlayerMovement : MonoBehaviour {
         controller.Move((moveDirection + explosionMoveVelocity) * (Time.deltaTime * game.globalPlayerSpeedMult));
         //https://docs.unity3d.com/ScriptReference/CharacterController-collisionFlags.html
         isGrounded = (controller.collisionFlags & CollisionFlags.Below) != 0;
-        if (controller.collisionFlags == CollisionFlags.Above) {
+        if (controller.collisionFlags == CollisionFlags.Above &&  moveDirection.y > 0) {
             moveDirection.y = 0;
         }
 
@@ -155,9 +156,9 @@ public class PlayerMovement : MonoBehaviour {
 
     // https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnControllerColliderHit.html
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if ((controller.collisionFlags & CollisionFlags.Below) != 0)
+        // if ((controller.collisionFlags & CollisionFlags.Below) != 0)
             lastContactPoint = hit.point;
-        if (falling && Vector3.Angle(hit.normal, Vector3.up) > 95) {
+        if (falling && Vector3.Angle(hit.normal, Vector3.up) > 95 && moveDirection.y > 0) {
             moveDirection.y = 0;
         }
 
@@ -249,6 +250,8 @@ public class PlayerMovement : MonoBehaviour {
             transform.rotation = Quaternion.Euler(0f, -29f, 0f);
             game.mouseLook.xRotation = 0f;
             game.mouseLook.gameObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            game.mouseLook.gameObject.transform.localPosition = 
+                new Vector3(0.7f, game.mouseLook.gameObject.transform.localPosition.y, game.mouseLook.gameObject.transform.localPosition.z);
             // transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
             game.intro = false;

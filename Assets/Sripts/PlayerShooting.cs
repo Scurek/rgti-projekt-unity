@@ -75,7 +75,8 @@ public class PlayerShooting : MonoBehaviour {
                 Destroy(interactingObject.GetComponent<BoxCollider>());
                 removeObjectFromInteractingObjects(interactingObject);
                 interactingObject.transform.parent = kamera.transform;
-                interactingObject.transform.localPosition = new Vector3(-2f, -0.6f, -0.7f);
+                // interactingObject.transform.localPosition = new Vector3(-2f, -0.6f, -0.7f);
+                interactingObject.transform.localPosition = new Vector3(-1.48f, -0.6f, -0.7f);
                 interactingObject.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 interactingObject.transform.localScale = new Vector3(2, 2, 2);
                 game.enableHealth();

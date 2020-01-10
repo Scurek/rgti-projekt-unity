@@ -164,7 +164,7 @@ public class Game : MonoBehaviour {
     private void Update() {
         if (isDead)
             return;
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.P)) {
             if (PauseMenu.activeSelf) {
                 resumeGame();
             }
