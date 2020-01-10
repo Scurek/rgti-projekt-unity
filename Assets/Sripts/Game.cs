@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
@@ -19,7 +20,7 @@ public class Game : MonoBehaviour {
     public MouseLook mouseLook;
 
     public GameObject rocket;
-    private static List<Rocket> rocketPool;
+    private List<Rocket> rocketPool;
     public int rocketPoolSize = 2;
     
     // public GameObject explosion;
@@ -34,8 +35,8 @@ public class Game : MonoBehaviour {
     private GameObject ammocounterContainer;
     private GameObject ammocounter;
     private Text ammocounterText;
-    public int ammo = 7;
-    private int maxAmmo = 7;
+    public int ammo = 0;
+    private int maxAmmo = 15;
     private GameObject crosshair;
     public bool shootingHUDEnabled;
 
@@ -77,6 +78,7 @@ public class Game : MonoBehaviour {
 
     private GameObject PauseMenu;
     public bool isPaused;
+    private GameObject PauseKey;
 
     private Image DeathScreenContainer;
     private Text DeathScreenText;
@@ -85,6 +87,13 @@ public class Game : MonoBehaviour {
     // private Button DeathScreenRestartButton;
 
     private arrowTrap ArrowTrap;
+
+    private GameObject victoryScreen;
+    private Image victoryScreenContrainer;
+    private Text[] victoryScreenTextArray;
+    private Button restartGameButton;
+    
+    private Vector3 CheatCords = new Vector3(70f, 72f, 97f);
 
     void Awake() {
         SharedInstance = this;
@@ -140,6 +149,7 @@ public class Game : MonoBehaviour {
 
         PauseMenu = GameObject.Find("PauseMenu");
         PauseMenu.SetActive(false);
+        PauseKey = GameObject.Find("PauseKey");
 
         GameObject DeathScreen = GameObject.Find("DeathScreen");
         DeathScreenContainer = DeathScreen.GetComponent<Image>();
@@ -153,6 +163,12 @@ public class Game : MonoBehaviour {
         
         ArrowTrap = GameObject.Find("ArrowTrap").GetComponent<arrowTrap>();
 
+        victoryScreen = GameObject.Find("VictoryScreen");
+        victoryScreenContrainer = victoryScreen.GetComponent<Image>();
+        //victoryScreenTextArray = new Text[victoryScreen.transform.childCount];
+        victoryScreenTextArray = victoryScreen.GetComponentsInChildren<Text>();
+        restartGameButton = victoryScreenTextArray[5].gameObject.GetComponent<Button>();
+
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
@@ -164,7 +180,10 @@ public class Game : MonoBehaviour {
     private void Update() {
         if (isDead)
             return;
-        if (Input.GetKeyDown(KeyCode.P)) {
+        if (Input.GetKeyDown(KeyCode.C) && currentCheckpoint > 0) {
+            cheat();
+        }
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)) {
             if (PauseMenu.activeSelf) {
                 resumeGame();
             }
@@ -200,8 +219,17 @@ public class Game : MonoBehaviour {
         }
     }
 
+    private void cheat() {
+        playerController.enabled = false;
+        player.transform.position = CheatCords;
+        player.transform.rotation = Quaternion.Euler(0, 90f, 0);
+        playerCamera.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        playerController.enabled = true;
+    }
+
     public void pauseGame() {
         Time.timeScale = 0;
+        PauseKey.SetActive(false);
         PauseMenu.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -210,7 +238,10 @@ public class Game : MonoBehaviour {
 
     public void resumeGame() {
         Time.timeScale = 1;
-        PauseMenu.SetActive(false);
+        if (PauseMenu.activeInHierarchy)
+            PauseMenu.SetActive(false);
+        if (!PauseKey.activeInHierarchy)
+            PauseKey.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         isPaused = false;
@@ -267,6 +298,7 @@ public class Game : MonoBehaviour {
             return;
         shootingHUDEnabled = true;
         ammocounterContainer.SetActive(true);
+        updateAmmoCounter();
         crosshair.SetActive(true);
     }
 
@@ -319,8 +351,8 @@ public class Game : MonoBehaviour {
     private void showDeathScreen() {
         StartCoroutine(fadeInDeathScreen(0.25f));
     }
-    
-    public IEnumerator fadeInDeathScreen(float t) {
+
+    private IEnumerator fadeInDeathScreen(float t) {
         DeathScreenContainer.color = new Color(DeathScreenContainer.color.r, DeathScreenContainer.color.g, DeathScreenContainer.color.b, 0);
         DeathScreenText.color = new Color(DeathScreenText.color.r, DeathScreenText.color.g, DeathScreenText.color.b, 0);
         DeathScreenRestartText.color = new Color(DeathScreenRestartText.color.r, DeathScreenRestartText.color.g, DeathScreenRestartText.color.b, 0);
@@ -328,7 +360,6 @@ public class Game : MonoBehaviour {
         DeathScreenText.enabled = true;
         DeathScreenRestartText.enabled = true;
         while (DeathScreenContainer.color.a < 1.0f) {
-            Debug.Log(DeathScreenContainer.color.a);
             DeathScreenContainer.color = new Color(DeathScreenContainer.color.r, DeathScreenContainer.color.g, DeathScreenContainer.color.b,
                 DeathScreenContainer.color.a + (Time.deltaTime / t));
             DeathScreenText.color = new Color(DeathScreenText.color.r, DeathScreenText.color.g, DeathScreenText.color.b,
@@ -338,9 +369,61 @@ public class Game : MonoBehaviour {
             yield return null;
         }
     }
+    
+    public void showVictoryScreen() {
+        isDead = true;
+        StartCoroutine(fadeInVictoryScreen());
+    }
+    
+    private IEnumerator fadeInVictoryScreen() {
+        victoryScreenContrainer.color = new Color(victoryScreenContrainer.color.r, victoryScreenContrainer.color.g, victoryScreenContrainer.color.b, 0);
+        victoryScreenContrainer.enabled = true;
+        restartGameButton.interactable = false;
+        foreach (var text in victoryScreenTextArray) {
+            text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
+            text.enabled = true;
+        }
+        while (victoryScreenContrainer.color.a < 0.9f) {
+            victoryScreenContrainer.color = new Color(victoryScreenContrainer.color.r, victoryScreenContrainer.color.g, victoryScreenContrainer.color.b,
+                Math.Max(victoryScreenContrainer.color.a + (Time.deltaTime / 0.05f), 0.9f));
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        Text currentText = victoryScreenTextArray[0];
+        while (currentText.color.a < 1.0f) {
+            currentText.color = new Color(currentText.color.r, currentText.color.g, currentText.color.b,
+                currentText.color.a + (Time.deltaTime / 0.3f));
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.3f);
+        while (victoryScreenTextArray[1].color.a < 1.0f) {
+            for (int i = 1; i < 3; i++) {
+                currentText = victoryScreenTextArray[i];
+                currentText.color = new Color(currentText.color.r, currentText.color.g, currentText.color.b, currentText.color.a + (Time.deltaTime / 0.6f));
+                yield return null;
+            }
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.6f);
+        while (victoryScreenTextArray[3].color.a < 1.0f) {
+            for (int i = 3; i < 6; i++) {
+                currentText = victoryScreenTextArray[i];
+                currentText.color = new Color(currentText.color.r, currentText.color.g, currentText.color.b, currentText.color.a + (Time.deltaTime / 1f));
+                yield return null;
+            }
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        restartGameButton.interactable = true;
+    }
+
+    public void restart() {
+        SceneManager.LoadScene("Game");
+    }
 
     public void restartFromLastCheckpoint() {
         destroyAllRockets();
+        health = maxHealth;
         DeathScreenContainer.enabled = false;
         DeathScreenText.enabled = false;
         DeathScreenRestartText.enabled = false;
