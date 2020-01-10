@@ -175,7 +175,7 @@ public class PlayerShooting : MonoBehaviour {
                 game.displayText("bazooka");
                 currentHelper = 2;
             } else if (nextObject.CompareTag("ammoBox") && currentHelper < 1) {
-                Debug.Log(nextObject.name);
+                // Debug.Log(nextObject.name);
                 game.displayText("ammo");
                 currentHelper = 1;
             }

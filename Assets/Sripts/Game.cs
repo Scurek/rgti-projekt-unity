@@ -92,7 +92,10 @@ public class Game : MonoBehaviour {
     private Image victoryScreenContrainer;
     private Text[] victoryScreenTextArray;
     private Button restartGameButton;
-    
+
+    public GameObject SuperModeTutorial;
+    public bool inTutorial;
+
     private Vector3 CheatCords = new Vector3(70f, 72f, 97f);
 
     void Awake() {
@@ -169,6 +172,8 @@ public class Game : MonoBehaviour {
         victoryScreenTextArray = victoryScreen.GetComponentsInChildren<Text>();
         restartGameButton = victoryScreenTextArray[5].gameObject.GetComponent<Button>();
 
+        SuperModeTutorial = GameObject.Find("SuperMode");
+        SuperModeTutorial.SetActive(false);
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
@@ -180,6 +185,9 @@ public class Game : MonoBehaviour {
     private void Update() {
         if (isDead)
             return;
+        if (inTutorial && Input.GetKeyDown(KeyCode.Space)) {
+            hideSuperTeutorial();
+        }
         if (Input.GetKeyDown(KeyCode.C) && currentCheckpoint > 0) {
             cheat();
         }
@@ -188,7 +196,7 @@ public class Game : MonoBehaviour {
                 resumeGame();
             }
             else {
-                pauseGame();
+                pauseGame(true);
             }
         }
         if (specialEnabled) {
@@ -227,10 +235,12 @@ public class Game : MonoBehaviour {
         playerController.enabled = true;
     }
 
-    public void pauseGame() {
+    public void pauseGame(bool truePause) {
         Time.timeScale = 0;
-        PauseKey.SetActive(false);
-        PauseMenu.SetActive(true);
+        if (truePause) {
+            PauseKey.SetActive(false);
+            PauseMenu.SetActive(true);
+        }
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         isPaused = true;
@@ -267,6 +277,32 @@ public class Game : MonoBehaviour {
         // specialTheme.volume = 1;
         if (bazookaAnimator)
             bazookaAnimator.speed = globalPlayerSpeedMult;
+    }
+
+    public void showSuperTeutorial() {
+        // Debug.Log(SuperModeTutorial);
+        // Debug.Log(SuperModeTutorial.activeInHierarchy);
+        SuperModeTutorial.SetActive(true);
+        inTutorial = true;
+        pauseGame(false);
+        
+    }
+    
+    private void hideSuperTeutorial() {
+        Time.timeScale = 1;
+        inTutorial = false;
+        SuperModeTutorial.SetActive(false);
+        if (PauseMenu.activeInHierarchy)
+            PauseMenu.SetActive(false);
+        if (!PauseKey.activeInHierarchy)
+            PauseKey.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        isPaused = false;
+        enableSpecial();
+        setGlobalSpeed();
+        disableControlls = false;
+        playerController.enabled = true;
     }
 
     public void startStopwatch() {
@@ -372,6 +408,8 @@ public class Game : MonoBehaviour {
     
     public void showVictoryScreen() {
         isDead = true;
+        TimeSpan ts = stopWatch.Elapsed;
+        victoryScreenTextArray[4].text = $"<i>{ts.Minutes:00}:{ts.Seconds:00}</i>";
         StartCoroutine(fadeInVictoryScreen());
     }
     

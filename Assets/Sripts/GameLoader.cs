@@ -6,21 +6,28 @@ using UnityEngine.UI;
 public class GameLoader : MonoBehaviour {
     public Text m_Text;
     public Button play;
+    public Button quit;
 
     private AsyncOperation gameLoader;
 
     void Start() {
         //Call the LoadButton() function when the user clicks this Button
         play = GameObject.Find("Play").GetComponent<Button>();
+        quit = GameObject.Find("Quit").GetComponent<Button>();
         m_Text = GameObject.Find("Loading").GetComponent<Text>();
         play.interactable = false;
         StartCoroutine(LoadScene());
         play.onClick.AddListener(LoadButton);
+        quit.onClick.AddListener(QuitButton);
     }
 
     void LoadButton() {
         //Start loading the Scene asynchronously and output the progress bar
         gameLoader.allowSceneActivation = true;
+    }
+
+    void QuitButton() {
+        Application.Quit();
     }
 
     IEnumerator LoadScene() {

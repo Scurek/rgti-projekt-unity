@@ -31,6 +31,7 @@ public class CheckpointController : MonoBehaviour {
     void OnTriggerEnter(Collider other) {
         if (!visited && checkpointNumber > Game.SharedInstance.currentCheckpoint) {
             zastava.SetActive(true);
+            Game.SharedInstance.enableHealth();
             if (!disableSound)
                 InteractionSound.Play();
             if (!isLast) {

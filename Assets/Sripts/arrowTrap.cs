@@ -73,10 +73,11 @@ public class arrowTrap : MonoBehaviour {
     // }
 
     private void activateSlowMo() {
-        Game.SharedInstance.enableSpecial();
-        Game.SharedInstance.setGlobalSpeed();
-        Game.SharedInstance.disableControlls = false;
-        playerController.enabled = true;
+        Game.SharedInstance.showSuperTeutorial();
+        // Game.SharedInstance.enableSpecial();
+        // Game.SharedInstance.setGlobalSpeed();
+        // Game.SharedInstance.disableControlls = false;
+        // playerController.enabled = true;
         done = true;
     }
 
