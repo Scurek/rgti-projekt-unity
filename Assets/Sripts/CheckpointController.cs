@@ -30,13 +30,19 @@ public class CheckpointController : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (!visited && checkpointNumber > Game.SharedInstance.currentCheckpoint) {
-            visited = true;
-            Game.SharedInstance.currentCheckpoint = checkpointNumber;
-            Game.SharedInstance.spawnPosition = transform.position + spawnDiff;
             zastava.SetActive(true);
-            Game.SharedInstance.showCheckpointDisplay();
             if (!disableSound)
                 InteractionSound.Play();
+            if (!isLast) {
+                visited = true;
+                Game.SharedInstance.currentCheckpoint = checkpointNumber;
+                Game.SharedInstance.spawnPosition = transform.position + spawnDiff;
+                Game.SharedInstance.showCheckpointDisplay();
+            }
+            else {
+                Game.SharedInstance.showVictoryScreen();
+                other.gameObject.GetComponents<AudioSource>()[1].volume = 0;
+            }
         }
         // Debug.Log(other.gameObject.tag);
     }

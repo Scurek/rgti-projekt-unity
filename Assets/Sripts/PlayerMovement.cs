@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour {
     //public bool m_SlideOnTaggedObjects = false;
     public float maxSlideSpeed = 6.0f;
     public float m_AntiBumpFactor = 0.75f;
-    public float jumpCooldown = 0.1f;
+    public float jumpCooldown = 0.05f;
 
     public Vector3 moveDirection = Vector3.zero;
     public Vector3 explosionMoveVelocity = Vector3.zero;
@@ -34,10 +34,13 @@ public class PlayerMovement : MonoBehaviour {
     public float remJumpCooldown;
     private Game game;
     public bool sliding;
+    // public float footstepfraction;
 
     private AudioSource fallSound;
     private AudioSource nononoSound;
-
+    // private AudioSource footStepSound;
+    
+    // private Vector3 xydm = new Vector3();
 
 
     private void Start() {
@@ -50,6 +53,7 @@ public class PlayerMovement : MonoBehaviour {
         game = Game.SharedInstance;
         fallSound = GetComponents<AudioSource>()[0];
         nononoSound = GetComponents<AudioSource>()[3];
+        // footStepSound = GetComponents<AudioSource>()[5];
     }
 
 
@@ -89,8 +93,9 @@ public class PlayerMovement : MonoBehaviour {
             }
 
             // Sprint
-            speed = Input.GetKey(KeyCode.LeftShift) ? maxSpeedSprint : maxSpeed;
-
+            
+            bool sprinting = Input.GetKey(KeyCode.LeftShift);
+            speed = sprinting ? maxSpeedSprint : maxSpeed;
             if (sliding) // || (m_SlideOnTaggedObjects && hit.collider.tag == "Slide")
             {
                 // Tole naj bi zračunalo smer drsenja
@@ -111,8 +116,19 @@ public class PlayerMovement : MonoBehaviour {
 
                 //Tole sm najdu ko sm nekej za premikanje gledou
                 moveDirection.y = -m_AntiBumpFactor;
+                
                 moveDirection = transform.TransformDirection(moveDirection) * speed;
                 canMove = true;
+                // float chosenFootstepSFXFrequency = (sprinting ? 0.4f : 0.3f);
+                // if (footstepfraction >= 1f / chosenFootstepSFXFrequency)
+                // {
+                //     footstepfraction = 0f;
+                //     footStepSound.Play();
+                // }
+                //
+                // xydm.x = moveDirection.x;
+                // xydm.z = moveDirection.z;
+                // footstepfraction += xydm.magnitude * Time.deltaTime;
             }
 
             if (Input.GetButtonDown("Jump") && remJumpCooldown <= 0 && !movementDisabled()) {
@@ -185,7 +201,9 @@ public class PlayerMovement : MonoBehaviour {
             isGrounded = false;
         }
         else {
+            // moveDirection.y = Math.Max(explosionPlayer.y, moveDirection.y);
             moveDirection.y += explosionPlayer.y;
+            isGrounded = false;
         }
     }
 
@@ -195,7 +213,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float powerScalar(float distance) {
-        int maxPower = 16;
+        int maxPower = 18;
         float power = 0;
         if (distance > 20) {
             return 0;
@@ -251,7 +269,7 @@ public class PlayerMovement : MonoBehaviour {
             game.mouseLook.xRotation = 0f;
             game.mouseLook.gameObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             game.mouseLook.gameObject.transform.localPosition = 
-                new Vector3(0.7f, game.mouseLook.gameObject.transform.localPosition.y, game.mouseLook.gameObject.transform.localPosition.z);
+                new Vector3(0.5f, game.mouseLook.gameObject.transform.localPosition.y, game.mouseLook.gameObject.transform.localPosition.z);
             // transform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // transform.Rotate(-25f, 0f, 0f);
             game.intro = false;
