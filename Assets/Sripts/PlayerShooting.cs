@@ -33,6 +33,8 @@ public class PlayerShooting : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (game.isPaused || game.isDead || game.disableControlls)
+            return;
         if (Input.GetKeyDown("r") && game.specialEnabled) {
             if (!game.slowMotionEnabled) {
                 game.setGlobalSpeed();

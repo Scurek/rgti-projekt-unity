@@ -7,7 +7,9 @@ public class arrow : MonoBehaviour {
     public Vector3 direction;
     public float velocity = 0.25f;
     public bool moving = false;
+    private Transform initialTransform;
     void Start() {
+        initialTransform = transform;
         direction = transform.forward;
         
     }
@@ -19,12 +21,15 @@ public class arrow : MonoBehaviour {
     }
     
     private void OnTriggerEnter(Collider other) {
-        if (!other.isTrigger && enabled && other.gameObject.name != "Crossbow") {
+        if (!other.isTrigger && enabled && moving && other.gameObject.name != "Crossbow") {
             // Debug.Log(other.name);
             if (other.gameObject && other.gameObject.name == "Player") {
                 Game.SharedInstance.damage(100);
             }
-            Destroy(gameObject);
+            moving = false;
+            gameObject.transform.localPosition = new Vector3();
+            gameObject.transform.rotation = new Quaternion();
+            gameObject.SetActive(false);
         }
     }
 }

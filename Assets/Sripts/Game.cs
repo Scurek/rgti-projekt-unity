@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -46,7 +44,7 @@ public class Game : MonoBehaviour {
     private GameObject specialbar;
     private float maxSpecial = 10f;
     public float special = 10f;
-    private AudioSource specialTheme;
+    private AudioSource DeathSound;
 
     public int currentCheckpoint = 0;
 
@@ -78,6 +76,15 @@ public class Game : MonoBehaviour {
     private Text checkpointDisplay;
 
     private GameObject PauseMenu;
+    public bool isPaused;
+
+    private Image DeathScreenContainer;
+    private Text DeathScreenText;
+    private Text DeathScreenRestartText;
+    public bool isDead;
+    // private Button DeathScreenRestartButton;
+
+    private arrowTrap ArrowTrap;
 
     void Awake() {
         SharedInstance = this;
@@ -119,7 +126,7 @@ public class Game : MonoBehaviour {
         slowMotionOverlay.enabled = false;
         // slowMotionOverlay.SetActive(false);
         special = maxSpecial;
-        specialTheme = player.GetComponents<AudioSource>()[1];
+        DeathSound = player.GetComponents<AudioSource>()[4];
 
         helperDisplay = GameObject.Find("HelperDisplay").GetComponent<Text>();
 
@@ -134,6 +141,18 @@ public class Game : MonoBehaviour {
         PauseMenu = GameObject.Find("PauseMenu");
         PauseMenu.SetActive(false);
 
+        GameObject DeathScreen = GameObject.Find("DeathScreen");
+        DeathScreenContainer = DeathScreen.GetComponent<Image>();
+        DeathScreenText = DeathScreen.transform.Find("Failed").GetComponent<Text>();
+        GameObject DeathScreenRestart = DeathScreen.transform.Find("Respawn").gameObject;
+        DeathScreenRestartText = DeathScreenRestart.GetComponent<Text>();
+        DeathScreenContainer.enabled = false;
+        DeathScreenText.enabled = false;
+        DeathScreenRestartText.enabled = false;
+        // DeathScreenRestartButton = DeathScreenRestart.GetComponent<Button>();
+
+        ArrowTrap = GameObject.Find("ArrowTrap").GetComponent<arrowTrap>();
+
         rocketPool = new List<Rocket>();
         for (int i = 0; i < rocketPoolSize; i++) {
             rocketPool.Add(Instantiate(rocket).GetComponent<Rocket>());
@@ -143,6 +162,8 @@ public class Game : MonoBehaviour {
     }
 
     private void Update() {
+        if (isDead)
+            return;
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (PauseMenu.activeSelf) {
                 resumeGame();
@@ -184,6 +205,7 @@ public class Game : MonoBehaviour {
         PauseMenu.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        isPaused = true;
     }
 
     public void resumeGame() {
@@ -191,6 +213,7 @@ public class Game : MonoBehaviour {
         PauseMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        isPaused = false;
     }
 
     public void resetGlobalSpeed() {
@@ -269,15 +292,61 @@ public class Game : MonoBehaviour {
     }
 
     public void death() {
-        teleportPlayer(spawnPosition);
+        showDeathScreen();
         health = maxHealth;
         ammo = maxAmmo;
         special = maxSpecial;
         updateHealthBar();
         updateAmmoCounter();
         updateSpecialBar();
+        DeathSound.Play();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        isDead = true;
+        destroyAllRockets();
+        if (currentCheckpoint < 2)
+            ResetArrowTrap();
         if (slowMotionEnabled)
             resetGlobalSpeed();
+    }
+
+    public void ResetArrowTrap() {
+        ArrowTrap.done = false;
+        ArrowTrap.started = false;
+        ArrowTrap.step = 0;
+    }
+
+    private void showDeathScreen() {
+        StartCoroutine(fadeInDeathScreen(0.25f));
+    }
+    
+    public IEnumerator fadeInDeathScreen(float t) {
+        DeathScreenContainer.color = new Color(DeathScreenContainer.color.r, DeathScreenContainer.color.g, DeathScreenContainer.color.b, 0);
+        DeathScreenText.color = new Color(DeathScreenText.color.r, DeathScreenText.color.g, DeathScreenText.color.b, 0);
+        DeathScreenRestartText.color = new Color(DeathScreenRestartText.color.r, DeathScreenRestartText.color.g, DeathScreenRestartText.color.b, 0);
+        DeathScreenContainer.enabled = true;
+        DeathScreenText.enabled = true;
+        DeathScreenRestartText.enabled = true;
+        while (DeathScreenContainer.color.a < 1.0f) {
+            Debug.Log(DeathScreenContainer.color.a);
+            DeathScreenContainer.color = new Color(DeathScreenContainer.color.r, DeathScreenContainer.color.g, DeathScreenContainer.color.b,
+                DeathScreenContainer.color.a + (Time.deltaTime / t));
+            DeathScreenText.color = new Color(DeathScreenText.color.r, DeathScreenText.color.g, DeathScreenText.color.b,
+                DeathScreenText.color.a + (Time.deltaTime / t));
+            DeathScreenRestartText.color = new Color(DeathScreenRestartText.color.r, DeathScreenRestartText.color.g, DeathScreenRestartText.color.b,
+                DeathScreenRestartText.color.a + (Time.deltaTime / t));
+            yield return null;
+        }
+    }
+
+    public void restartFromLastCheckpoint() {
+        DeathScreenContainer.enabled = false;
+        DeathScreenText.enabled = false;
+        DeathScreenRestartText.enabled = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        isDead = false;
+        teleportPlayer(spawnPosition);
     }
 
     public void teleportPlayer(Vector3 newPosition) {
@@ -315,6 +384,14 @@ public class Game : MonoBehaviour {
         }
 
         return null;
+    }
+    
+    public void destroyAllRockets() {
+        foreach (var trRocket in rocketPool) {
+            if (trRocket.gameObject.activeInHierarchy) {
+                trRocket.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void disableLighting() {

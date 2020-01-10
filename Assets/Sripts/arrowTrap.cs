@@ -16,7 +16,7 @@ public class arrowTrap : MonoBehaviour {
     public bool started;
     public bool done;
 
-    private short step;
+    public short step;
     private float startTime;
 
     public float journeyTime = 0.2f;
@@ -91,7 +91,7 @@ public class arrowTrap : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (started)
+        if (started || Game.SharedInstance.isDead)
             return;
         if (other.gameObject.CompareTag("player")) {
             started = true;

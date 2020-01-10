@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        if (!controller.enabled)
+        if (!controller.enabled || game.isPaused || game.isDead)
             return;
         if (remJumpCooldown > 0) {
             remJumpCooldown -= Time.deltaTime * game.globalPlayerSpeedMult;
